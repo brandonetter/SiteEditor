@@ -3,10 +3,12 @@ import { login } from "../../store/session";
 import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
 import "./LoginForm.css";
+import { Redirect } from 'react-router-dom'
 
 function LoginFormModal() {
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
+  const [redirect, setRedirect] = useState(false)
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState([]);
   const { closeModal } = useModal();
@@ -17,13 +19,15 @@ function LoginFormModal() {
     if (data) {
       setErrors(data);
     } else {
-        closeModal()
+      setRedirect(true)
+      closeModal()
     }
   };
 
   return (
     <>
       <h1>Log In</h1>
+      {redirect && <Redirect to="/dashboard" />}
       <form onSubmit={handleSubmit}>
         <ul>
           {errors.map((error, idx) => (

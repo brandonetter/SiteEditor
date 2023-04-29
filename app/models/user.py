@@ -13,6 +13,12 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(40), nullable=False, unique=True)
     email = db.Column(db.String(255), nullable=False, unique=True)
     hashed_password = db.Column(db.String(255), nullable=False)
+    createdAt = db.Column(db.DateTime, server_default=db.func.now())
+    updatedAt = db.Column(db.DateTime, server_default=db.func.now(),server_onupdate=db.func.now())
+
+    projects = db.relationship('Project', back_populates='user')
+    published_templates = db.relationship('PublishedTemplate', back_populates='user')
+    templates = db.relationship('Template', back_populates='user')
 
     @property
     def password(self):

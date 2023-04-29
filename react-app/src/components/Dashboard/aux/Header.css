@@ -1,0 +1,93 @@
+.dashboard-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1rem;
+    height: 3.5rem;
+    background-color: #1C2333;
+    border-bottom: 1px solid #3C445C;
+    box-shadow: 0 1px 2px rgba(0,0,0,.1);
+    z-index: 1;
+}
+
+.dashboard-header-icon{
+    position: absolute;
+    top: 0.2rem;
+    left: 0.2rem;
+    font-size: 1.3rem;
+    color: #fff;
+    cursor: pointer;
+    user-select: none;
+    width: 2rem;
+    height: 2rem;
+    padding: .5rem;
+    border:1px solid #1C2333;
+
+}
+.icon-right{
+    position: absolute;
+    top: 0.2rem;
+    left: calc(100vw - 3.2rem);
+    font-size: 1.3rem;
+    color: #fff;
+    cursor: pointer;
+    width: 2rem;
+    height: 2rem;
+    padding: .5rem;
+    border:1px solid #1C2333;
+}
+.tooltip-project{
+    position: absolute;
+    top: 0.55rem;
+    left: calc(100vw - 10.9rem);
+    font-size: 1rem;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    color: #fff;
+    width:fit-content;
+    height: fit-content;
+    border-radius: 5px;
+    background-color: #232a3c;
+    padding: .5rem;
+    border:1px solid #232a3c;
+}
+.tooltip-project::after{
+
+        content: " ";
+        position: absolute;
+        top: 40%;
+        left: 100%;
+        margin-top: -5px;
+        border-width: 10px;
+        border-style: solid;
+        border-color: transparent transparent transparent #232a3c;
+
+}
+.dashboard-header-icon:hover{
+    box-sizing: border-box;
+    border:1px solid #232b3e;
+    border-radius: 20%;
+    background-color: #232b3e;
+
+}
+.sidebar{
+    position: fixed;
+    top:0rem;
+    left: 0;
+    width: 15.4rem;
+    height: 100vh;
+    background-color: #1C2333;
+    z-index: 1;
+    transform: translateX(-100%);
+    transition: all .2s ease-in-out;
+    opacity: 0.1;
+    filter:drop-shadow(0 0 0.4rem #000000bd);
+}
+.sidebar-content{
+    position: relative;
+    padding:1rem;
+    top: 3.5rem;
+}
+.sidebar-show{
+    opacity: 1;
+    transform: translateX(0);
+}

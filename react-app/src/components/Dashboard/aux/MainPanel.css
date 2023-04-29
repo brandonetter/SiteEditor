@@ -1,0 +1,13 @@
+.dashboard-main-panel{
+    display: flex;
+    padding:1rem;
+    height: calc(100vh - 3.55rem);
+    width: 100%;
+    background-color:#0E1525;
+    transform: translateX(0);
+}
+.sidebar-open {
+    position: fixed;
+    width: calc(100% - 15.4rem);
+    transform: translateX(15.4rem);
+}

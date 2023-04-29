@@ -1,1 +1,57 @@
-/* TODO Add site wide styles */
+html,
+body {
+  padding: 0;
+  margin: 0;
+  background-color:#0E1525;
+  overflow: hidden;
+}
+
+.App {
+  font-family: "Segoe UI", sans-serif;
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.split-pane-col {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.split-pane-row {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+}
+
+.split-pane-top,
+.split-pane-bottom,
+.split-pane-right,
+.split-pane-left {
+  flex: 1;
+  overflow: hidden;
+}
+
+.split-pane-right {
+}
+
+.split-pane-top,
+.split-pane-bottom {
+  background-color: #ccc;
+  text-align: left;
+
+  user-select: none;
+}
+
+.separator-col {
+  border: 5px solid black;
+  cursor: col-resize;
+}
+
+.separator-row {
+  border: 5px solid black;
+  cursor: row-resize;
+}
+
