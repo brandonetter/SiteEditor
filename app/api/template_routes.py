@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify,request
-from flask_login import login_required
+from flask_login import login_required,current_user
 from app.models import User, Project, File, FileContent, Template, PublishedTemplate, db
 
 template_routes = Blueprint('templates', __name__)
@@ -51,17 +51,32 @@ def update_template(id):
     db.session.commit()
     return template.to_dict()
 
-@template_routes.route('/<int:id>', methods=['POST'])
+@template_routes.route('/new', methods=['POST'])
 @login_required
-def create_template(id):
+def create_template():
     """
     Creates a template by id
     """
-    template = Template(
-        name=request.json['name'],
-        userid=current_user.id
-    )
-    db.session.add(template)
-    db.session.commit()
-    return template.to_dict()
+    print(request.json)
+
+    content = [request.json['gridTemplate'], request.json['divs']]
+    # escape single quotes
+    content = str(content).replace("'", "''")
+
+    # try to create a new template
+    # and catch any errors
+    try:
+        template = Template(
+            name=request.json['name'],
+            content = content,
+            userid=current_user.id
+        )
+        db.session.add(template)
+        db.session.commit()
+        return template.to_dict()
+    except:
+        return {'errors': ['Template name already exists']}, 401
+
+
+
 

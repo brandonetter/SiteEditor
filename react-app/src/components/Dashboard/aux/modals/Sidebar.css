@@ -70,6 +70,22 @@
     text-decoration: none;
 
 }
+.hide-defaults{
+    text-decoration: none !important;
+}
 .sidebar-directory:hover{
     background-color: #323f5d23;
+}
+.sidebar-end{
+    margin-top: 15vh;
+}
+
+.sidebar-button.red{
+    margin-top: 10px;
+    border: #6f0808 1px solid;
+    background-color: #6f0808 !important;
+}
+.sidebar-button.red:hover{
+    border: #ac2323 1px solid;
+    background-color: #6f0808 !important;
 }

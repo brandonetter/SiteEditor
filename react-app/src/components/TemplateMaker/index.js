@@ -2,15 +2,18 @@
 import { fabric } from 'fabric';
 import { useEffect, useState, useRef } from 'react';
 import './templateMaker.css';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { assignTemplate } from '../../store/templates';
 import knifeIcon from './knife.png';
 import dottedSquare from './dottedSquare.png';
 import trash from './trashIcon.png';
 import preview from './preview.png';
+
 function TemplateMaker() {
     const [canvas, setCanvas] = useState(null);
     const [borderRect, setBorderRect] = useState(null);
     const [mainRect, setMainRect] = useState(null);
+    const [divList, setDivList] = useState([]);
     const [toolRect, setToolRect] = useState(null);
     const [rulerRect, setRulerRect] = useState(null);
     const [resizeTimeout, setResizeTimeout] = useState(0);
@@ -21,7 +24,10 @@ function TemplateMaker() {
     const [userVerticalLines, setUserVerticalLines] = useState([]);
     const [userHorizontalLines, setUserHorizontalLines] = useState([]);
     const modal = useSelector(state => state.modals.sidebar);
+    const dispatch = useDispatch();
     const container = useRef(null);
+    const buttonColor = '#0053A6';
+    const buttonColorHighlight = '#3275b7';
     let resizeTT = null;
 
     const generateRandomPastelColor = () => {
@@ -34,11 +40,16 @@ function TemplateMaker() {
     const canvasInit = () => {
         // get current canvas state
         let newCanvas;
+        let lastWidth;
+        let lastHeight;
         if (!canvas) {
             newCanvas = new fabric.Canvas('canvas');
 
         } else {
+
             newCanvas = canvas;
+            lastHeight = newCanvas.height;
+            lastWidth = newCanvas.width;
             // newCanvas.remove(borderRect);
             // newCanvas.remove(mainRect);
             // newCanvas.remove(toolRect);
@@ -51,6 +62,8 @@ function TemplateMaker() {
 
 
         }
+
+
         const width = container.current.clientWidth - 25;
         const height = container.current.clientHeight - 25;
         newCanvas.setHeight(height);
@@ -60,7 +73,9 @@ function TemplateMaker() {
             height: height - 5,
             left: 0,
             top: 0,
-            stroke: '#1C233310',
+            stroke: '#1C233305',
+
+
             strokeWidth: 5,
             fill: 'transparent',
             selectable: false,
@@ -68,9 +83,9 @@ function TemplateMaker() {
         });
         let mainWindow = new fabric.Rect({
             width: width * 0.75,
-            height: width * 0.75 * (9 / 16),
+            height: parseFloat((width * 0.75 * (9 / 16)).toFixed(2)),
             left: width * 0.20,
-            top: height * 0.025 + 5,
+            top: 30,
             stroke: '#1C233399',
             strokeWidth: 2,
             fill: '#1C233333',
@@ -79,10 +94,13 @@ function TemplateMaker() {
             subTargetCheck: true,
             verticalLines: [],
             horizontalLines: [],
-            divList: [],
+            divList: [...divList],
         });
 
-
+        let lastMainWidth = lastWidth * 0.75;
+        let lastMainHeight = parseFloat((lastWidth * 0.75 * (9 / 16)).toFixed(2));
+        let lastMainLeft = lastWidth * 0.20;
+        let lastMainTop = 30;
         // Redraw user lines
         //
         //
@@ -115,6 +133,125 @@ function TemplateMaker() {
             newCanvas.add(line);
             mainWindow.horizontalLines = [...mainWindow.horizontalLines, userHorizontalLines[i]];
         }
+        mainWindow.divList = [...divList];
+        setDivList([]);
+        newCanvas.add(mainWindow);
+        for (let i = 0; i < divList.length; i++) {
+            // place new divs on the canvas relative to the new canvas size
+            let { left, top, width, height, color, startColumn, endColumn, startRow, endRow } = divList[i];
+            // iterate throught the positions of the vertical lines and find the closest one to the left and right of the div
+            // using the startColumn and endColumn, find the closest vertical lines
+            if (startColumn > endColumn) {
+                let temp = startColumn;
+                startColumn = endColumn;
+                endColumn = temp;
+            }
+            if (startRow > endRow) {
+                let temp = startRow;
+                startRow = endRow;
+                endRow = temp;
+            }
+
+            let closestVert = 0;
+            mainWindow.verticalLines.sort((a, b) => a - b);
+            mainWindow.horizontalLines.sort((a, b) => a - b);
+            let nextVert = 1;
+
+            if (startColumn === 1) {
+                closestVert = 0;
+            }
+            if (endColumn === 1) {
+                nextVert = mainWindow.verticalLines[0] || 1;
+            }
+
+
+            if (startColumn > 1) {
+                closestVert = mainWindow.verticalLines[startColumn - 2];
+                console.log(closestVert);
+            }
+            if (endColumn > 1) {
+                nextVert = mainWindow.verticalLines[endColumn - 1] || 1;
+            }
+
+
+
+
+            let closestHor = 0;
+            let nextHor = 1;
+            console.log(startRow, endRow);
+            if (startRow === 1) {
+                closestHor = 0;
+            }
+            if (endRow === 1) {
+                nextHor = mainWindow.horizontalLines[0] || 1;
+            }
+            console.log(closestHor, nextHor);
+            if (startRow > 1) {
+                closestHor = mainWindow.horizontalLines[startRow - 2];
+            }
+            if (endRow > 1) {
+                nextHor = mainWindow.horizontalLines[endRow - 1] || 1;
+            }
+
+            closestVert = closestVert * mainWindow.width + mainWindow.left;
+            nextVert = nextVert * mainWindow.width + mainWindow.left;
+
+            closestHor = closestHor * mainWindow.height + mainWindow.top;
+            nextHor = nextHor * mainWindow.height + mainWindow.top;
+            console.log(closestVert, nextVert, closestHor, nextHor);
+            console.log(divList[i].id)
+            let newRect = new fabric.Rect({
+                width: nextVert - closestVert,
+                height: nextHor - closestHor,
+                left: closestVert,
+                top: closestHor,
+                fill: color,
+                stroke: '#000',
+                strokeWidth: 1,
+                selectable: true,
+                evented: true,
+                hideControls: true,
+                hoverCursor: 'default',
+                // hide controls
+                lockRotation: true,
+                id: divList[i].id,
+            });
+            newRect.setControlsVisibility({
+                mtr: false,
+                ml: false,
+                mr: false,
+                mt: false,
+                mb: false,
+                bl: false,
+                br: false,
+                tl: false,
+                tr: false,
+            });
+
+            newRect.on('mousedown', function (e) {
+                b3.set('fill', buttonColorHighlight);
+                b3.target = e.target;
+                newCanvas.renderAll();
+
+            });
+            newCanvas.add(newRect);
+            let thisDiv = {
+                id: newRect.id,
+                left: newRect.left,
+                top: newRect.top,
+                width: newRect.width,
+                height: newRect.height,
+                color: newRect.fill,
+                startColumn: startColumn,
+                startRow: startRow,
+                endColumn: endColumn,
+                endRow: endRow,
+            }
+            mainWindow.divList = [...mainWindow.divList, thisDiv];
+            setDivList((e) => [...e, thisDiv]);
+        }
+
+
         let r = new fabric.Rect({
             width: 120,
             height: 340,
@@ -122,7 +259,13 @@ function TemplateMaker() {
             top: height * 0.025,
             stroke: '#1C233399',
             strokeWidth: 2,
-            fill: '#1C233333',
+            fill: '#1C2333',
+            // rounded corners
+            rx: 10,
+            ry: 10,
+            // shadow
+            shadow: 'rgba(0,0,0,0.3) 5px 5px 5px',
+
             selectable: true,
             evented: false,
 
@@ -135,11 +278,13 @@ function TemplateMaker() {
             top: r.top + 10,
             stroke: slicerEnabled ? '#FFFFFF99' : '#1C233399',
             strokeWidth: 2,
-            fill: '#1C233333',
+            fill: buttonColor,
             selectable: false,
             evented: true,
             hoverCursor: 'pointer',
+            shadow: 'rgba(0,0,0,0.3) 5px 5px 5px',
             enabled: slicerEnabled,
+
         })
         let b2 = new fabric.Rect({
             width: r.width - 20,
@@ -148,9 +293,10 @@ function TemplateMaker() {
             top: r.top + 120,
             stroke: divEnabled ? '#FFFFFF99' : '#1C233399',
             strokeWidth: 2,
-            fill: '#1C233333',
+            fill: buttonColor,
             selectable: false,
             evented: true,
+            shadow: 'rgba(0,0,0,0.3) 5px 5px 5px',
             hoverCursor: 'pointer',
             enabled: divEnabled,
         })
@@ -161,8 +307,9 @@ function TemplateMaker() {
             top: r.top + 230,
             stroke: '#1C233399',
             strokeWidth: 2,
-            fill: '#1C233333',
+            fill: buttonColor,
             selectable: false,
+            shadow: 'rgba(0,0,0,0.3) 5px 5px 5px',
             evented: true,
             hoverCursor: 'pointer',
             enabled: false,
@@ -174,11 +321,12 @@ function TemplateMaker() {
             top: mainWindow.top + mainWindow.height - 100,
             stroke: '#1C233399',
             strokeWidth: 2,
-            fill: '#1C233333',
+            fill: buttonColor,
             // rounded corners
             rx: 10,
             ry: 10,
             selectable: false,
+            shadow: 'rgba(0,0,0,0.3) 5px 5px 5px',
             evented: true,
             hoverCursor: 'pointer',
             enabled: false,
@@ -188,9 +336,11 @@ function TemplateMaker() {
             if (b3.target) {
                 mainWindow.divList = mainWindow.divList.filter((e) => e.id !== b3.target.id);
                 newCanvas.remove(b3.target);
+                setDivList((e) => e.filter((e) => e.id !== b3.target.id));
                 b3.target = null;
-                b3.set('fill', '#1C233333');
+                b3.set('fill', buttonColor);
                 newCanvas.renderAll();
+                dispatch(assignTemplate(calcTemplate()));
             }
         });
 
@@ -244,6 +394,68 @@ function TemplateMaker() {
             newCanvas.add(img);
         });
 
+        const calcTemplate = () => {
+            // convert horizontal and vertical lines to percentages
+            let horizontalLines = [...mainWindow.horizontalLines]
+            let verticalLines = [...mainWindow.verticalLines]
+
+            // sort the lines from smallest to largest
+            horizontalLines.sort((a, b) => a - b);
+            verticalLines.sort((a, b) => a - b);
+
+            // get the width and height of the main window in percentages
+            // generate css grid template columns and rows using fr
+            let templateColumns = '';
+            let templateRows = '';
+            let lastColumn = 0;
+            let lastRow = 0;
+            for (let i = 0; i < verticalLines.length; i++) {
+                verticalLines[i] = verticalLines[i] - lastColumn;
+                lastColumn += verticalLines[i];
+                templateColumns += (verticalLines[i] * 100).toFixed(2) + 'fr ';
+
+            }
+            for (let i = 0; i < horizontalLines.length; i++) {
+                horizontalLines[i] = horizontalLines[i] - lastRow;
+                lastRow += horizontalLines[i];
+                templateRows += (horizontalLines[i] * 100).toFixed(2) + 'fr ';
+            }
+            templateColumns += ((1 - lastColumn) * 100).toFixed(2) + 'fr';
+            templateRows += ((1 - lastRow) * 100).toFixed(2) + 'fr';
+
+            // generate the CSS grid template
+            let gridTemplate = templateRows + '/' + templateColumns;
+            let divs = [];
+            for (let i = 0; i < mainWindow.divList.length; i++) {
+
+                let { startColumn, endColumn, startRow, endRow, color } = mainWindow.divList[i];
+                if (startColumn > endColumn) {
+                    let temp = startColumn;
+                    startColumn = endColumn;
+                    endColumn = temp;
+                }
+                if (startRow > endRow) {
+                    let temp = startRow;
+                    startRow = endRow;
+                    endRow = temp;
+                }
+                divs.push({
+                    startColumn: startColumn,
+                    endColumn: endColumn - startColumn + 1,
+                    startRow: startRow,
+                    endRow: endRow - startRow + 1,
+                    color: color,
+                })
+
+
+
+            }
+            let template = {
+                gridTemplate: gridTemplate,
+                divs: divs,
+            }
+            return template;
+        }
 
         b4.on('mousedown', () => {
             // convert horizontal and vertical lines to percentages
@@ -263,16 +475,16 @@ function TemplateMaker() {
             for (let i = 0; i < verticalLines.length; i++) {
                 verticalLines[i] = verticalLines[i] - lastColumn;
                 lastColumn += verticalLines[i];
-                templateColumns += verticalLines[i] * 100 + 'fr ';
+                templateColumns += (verticalLines[i] * 100).toFixed(2) + 'fr ';
 
             }
             for (let i = 0; i < horizontalLines.length; i++) {
                 horizontalLines[i] = horizontalLines[i] - lastRow;
                 lastRow += horizontalLines[i];
-                templateRows += horizontalLines[i] * 100 + 'fr ';
+                templateRows += (horizontalLines[i] * 100).toFixed(2) + 'fr ';
             }
-            templateColumns += (1 - lastColumn) * 100 + 'fr';
-            templateRows += (1 - lastRow) * 100 + 'fr';
+            templateColumns += ((1 - lastColumn) * 100).toFixed(2) + 'fr';
+            templateRows += ((1 - lastRow) * 100).toFixed(2) + 'fr';
 
             // generate the CSS grid template
             let gridTemplate = templateRows + '/' + templateColumns;
@@ -305,66 +517,21 @@ function TemplateMaker() {
             `);
             // generate the divs for the preview
             for (let i = 0; i < mainWindow.divList.length; i++) {
-                horizontalLines = [...mainWindow.horizontalLines]
-                verticalLines = [...mainWindow.verticalLines]
-                let div = mainWindow.divList[i];
-                // convert the div's dimensions to row and column spans
-                let left = div.left - mainWindow.left;
-                left = left / mainWindow.width;
-                //parse the left value to a 2 decimal float
-                left = parseFloat(left.toFixed(4));
-                let top = div.top - mainWindow.top;
-                top = top / mainWindow.height;
-                top = parseFloat(top.toFixed(4));
-                let width = div.width;
-                width = width / mainWindow.width;
-                let height = div.height;
-                height = height / mainWindow.height;
-                width = parseFloat(width.toFixed(4));
-                height = parseFloat(height.toFixed(4));
-                let columnStart = 1;
-                let columnEnd = 1;
-                let rowStart = 1;
-                let rowEnd = 1;
-                verticalLines = verticalLines.map((e) => parseFloat(e.toFixed(4)));
-                horizontalLines = horizontalLines.map((e) => parseFloat(e.toFixed(4)));
 
-                for (let j = 0; j < verticalLines.length; j++) {
-                    if (left + width >= 1) {
-                        columnEnd = verticalLines.length + 2;
-                    }
-
-                    if (verticalLines[j] <= left) {
-                        columnStart++;
-                    }
-                    if (verticalLines[j] <= left + width) {
-                        columnEnd++;
-                    }
+                let { startColumn, endColumn, startRow, endRow, color } = mainWindow.divList[i];
+                if (startColumn > endColumn) {
+                    let temp = startColumn;
+                    startColumn = endColumn;
+                    endColumn = temp;
                 }
-                for (let j = 0; j < horizontalLines.length; j++) {
-                    console.log(horizontalLines, top, top + height);
-                    if (top + height >= 1) {
-                        rowEnd = horizontalLines.length + 2;
-
-                    }
-                    if (horizontalLines[j] <= top) {
-                        rowStart++;
-                    }
-                    if (horizontalLines[j] <= top + height) {
-                        rowEnd++;
-                    }
-                }
-                let span = columnEnd - columnStart;
-                if (span <= 0) {
-                    span = 1;
-                }
-                let spanRow = rowEnd - rowStart;
-                if (spanRow <= 0) {
-                    spanRow = 1;
+                if (startRow > endRow) {
+                    let temp = startRow;
+                    startRow = endRow;
+                    endRow = temp;
                 }
 
                 previewWindow.document.write(`
-                <div style="grid-column: ${columnStart} / span ${span}; grid-row: ${rowStart} / span ${spanRow}; background-color: ${div.color};"></div>
+                <div style="grid-column: ${startColumn} / span ${endColumn - startColumn + 1}; grid-row: ${startRow} / span ${endRow - startRow + 1}; background-color: ${color};"></div>
                 `);
 
             }
@@ -392,25 +559,41 @@ function TemplateMaker() {
             b1.enabled && (setDivEnabled(false));
             if (!b2.enabled) {
                 b2.set('stroke', '#1C233333');
+
             }
 
             setSlicerEnabled(b1.enabled);
+
             if (b1.enabled) {
                 b1.set('stroke', '#FFFFFF99');
+
             } else {
                 b1.set('stroke', '#1C233333');
             }
+
             newCanvas.renderAll();
 
         });
+
 
         b1.on('mouseover', function (e) {
-            b1.set('fill', '#1C2333');
+            b1.set('fill', buttonColorHighlight);
 
             newCanvas.renderAll();
         });
+        b4.on('mouseover', function (e) {
+            b4.set('fill', buttonColorHighlight);
+
+            newCanvas.renderAll();
+        });
+        b4.on('mouseout', function (e) {
+            b4.set('fill', buttonColor);
+
+            newCanvas.renderAll();
+        });
+
         b1.on('mouseout', function (e) {
-            b1.set('fill', '#1C233333');
+            b1.set('fill', buttonColor);
             newCanvas.renderAll();
         });
 
@@ -432,12 +615,12 @@ function TemplateMaker() {
         });
 
         b2.on('mouseover', function (e) {
-            b2.set('fill', '#1C2333');
+            b2.set('fill', buttonColorHighlight);
 
             newCanvas.renderAll();
         });
         b2.on('mouseout', function (e) {
-            b2.set('fill', '#1C233333');
+            b2.set('fill', buttonColor);
             newCanvas.renderAll();
         });
 
@@ -497,6 +680,7 @@ function TemplateMaker() {
                 setUserVerticalLines((e) => [...e, pos]);
                 mainWindow.verticalLines = [...mainWindow.verticalLines, pos];
                 newCanvas.add(line);
+                dispatch(assignTemplate(calcTemplate()));
             }
         });
         verticalRuler.on('mouseover', function (e) {
@@ -526,6 +710,7 @@ function TemplateMaker() {
                 setUserHorizontalLines((e) => [...e, pos]);
                 mainWindow.horizontalLines = [...mainWindow.horizontalLines, pos];
                 newCanvas.add(line);
+                dispatch(assignTemplate(calcTemplate()));
             }
         });
 
@@ -664,7 +849,46 @@ function TemplateMaker() {
                     height: selectedBox.height,
 
                 }
+
+                let x = e.e.layerX;
+                let y = e.e.layerY;
+                // if the browser is chrome, use offsetX and offsetY
+                if (e.e.offsetX) {
+                    x = e.e.offsetX;
+                    y = e.e.offsetY;
+                }
+                let xIn = x - mainWindow.left;
+                let yIn = y - mainWindow.top;
+                // convert xIn and yIn to percentages
+                xIn = xIn / mainWindow.width;
+                yIn = yIn / mainWindow.height;
+                let nextVert = 1;
+                mainWindow.verticalLines.sort((a, b) => a - b);
+                for (let i = 0; i < mainWindow.verticalLines.length; i++) {
+                    // sort the vertical lines from smallest to largest
+
+                    if (mainWindow.verticalLines[i] < xIn) {
+
+                        nextVert += 1;
+                    }
+                }
+
+                let nextHor = 1;
+                for (let i = 0; i < mainWindow.horizontalLines.length; i++) {
+
+                    if (mainWindow.horizontalLines[i] < yIn) {
+                        nextHor += 1;
+
+                    }
+
+                }
+                b2.startDimensions.startColumn = nextVert;
+                b2.startDimensions.startRow = nextHor;
+
+
             }
+
+
         });
 
         mainWindow.on('mouseup', function (e) {
@@ -683,11 +907,15 @@ function TemplateMaker() {
                 yIn = yIn / mainWindow.height;
                 let closestVert = 0;
                 let nextVert = 1;
+                let endColumn = 1;
+                let endRow = 1;
+                mainWindow.verticalLines.sort((a, b) => a - b);
                 for (let i = 0; i < mainWindow.verticalLines.length; i++) {
                     // sort the vertical lines from smallest to largest
-                    mainWindow.verticalLines.sort((a, b) => a - b);
+
 
                     if (mainWindow.verticalLines[i] < xIn) {
+                        endColumn += 1;
                         if (mainWindow.verticalLines[i] >= closestVert)
                             closestVert = mainWindow.verticalLines[i];
                     } else
@@ -701,6 +929,7 @@ function TemplateMaker() {
                 let nextHor = 1;
                 for (let i = 0; i < mainWindow.horizontalLines.length; i++) {
                     if (mainWindow.horizontalLines[i] < yIn) {
+                        endRow += 1;
                         if (mainWindow.horizontalLines[i] >= closestHor)
                             closestHor = mainWindow.horizontalLines[i];
                     }
@@ -710,7 +939,6 @@ function TemplateMaker() {
                     }
 
                 }
-
                 // convert back to pixels
                 closestVert = closestVert * mainWindow.width + mainWindow.left;
                 nextVert = nextVert * mainWindow.width + mainWindow.left;
@@ -743,8 +971,6 @@ function TemplateMaker() {
                     tl: false,
                     tr: false,
                 });
-                console.log(b2.startDimensions);
-                console.log(newRect);
                 // draw a box that encompasses the b2.startDimensions and the newRect
                 let newLeft = Math.min(b2.startDimensions.left, newRect.left);
                 let newTop = Math.min(b2.startDimensions.top, newRect.top);
@@ -759,7 +985,21 @@ function TemplateMaker() {
                     strokeWidth: 1,
                     fill: generateRandomPastelColor(),
                     id: Math.random().toString(36).substring(7),
+
+
                 });
+                let thisDiv = {
+                    id: newRect.id,
+                    left: newRect.left,
+                    top: newRect.top,
+                    width: newRect.width,
+                    height: newRect.height,
+                    color: newRect.fill,
+                    startColumn: b2.startDimensions.startColumn,
+                    startRow: b2.startDimensions.startRow,
+                    endColumn: endColumn,
+                    endRow: endRow,
+                }
                 b2.startDimensions = null;
 
                 b2.enabled = false;
@@ -771,25 +1011,19 @@ function TemplateMaker() {
                     evented: false,
                 });
                 newRect.on('mousedown', function (e) {
-                    b3.set('fill', '#FFFFFF22');
+                    b3.set('fill', buttonColorHighlight);
                     b3.target = e.target;
                     newCanvas.renderAll();
 
                 });
-                let thisDiv = {
-                    id: newRect.id,
-                    left: newRect.left,
-                    top: newRect.top,
-                    width: newRect.width,
-                    height: newRect.height,
-                    color: newRect.fill,
-                }
-                mainWindow.divList = [...mainWindow.divList, thisDiv];
 
+                mainWindow.divList = [...mainWindow.divList, thisDiv];
+                setDivList((e) => [...e, thisDiv]);
                 newCanvas.add(newRect);
                 selectedBox.bringToFront();
                 newCanvas.renderAll();
             }
+            dispatch(assignTemplate(calcTemplate()));
         });
 
 
@@ -810,11 +1044,14 @@ function TemplateMaker() {
             yIn = yIn / mainWindow.height;
             let closestVert = 0;
             let nextVert = 1;
+            let startColumn = 1;
+            let startRow = 1;
             for (let i = 0; i < mainWindow.verticalLines.length; i++) {
                 // sort the vertical lines from smallest to largest
                 mainWindow.verticalLines.sort((a, b) => a - b);
 
                 if (mainWindow.verticalLines[i] < xIn) {
+                    startColumn += 1;
                     if (mainWindow.verticalLines[i] >= closestVert)
                         closestVert = mainWindow.verticalLines[i];
                 } else
@@ -828,6 +1065,7 @@ function TemplateMaker() {
             let nextHor = 1;
             for (let i = 0; i < mainWindow.horizontalLines.length; i++) {
                 if (mainWindow.horizontalLines[i] < yIn) {
+                    startRow += 1;
                     if (mainWindow.horizontalLines[i] >= closestHor)
                         closestHor = mainWindow.horizontalLines[i];
                 }
@@ -851,13 +1089,34 @@ function TemplateMaker() {
 
 
             });
+            console.log(e.target.id);
+            console.log(mainWindow.divList);
             let thisDivData = mainWindow.divList.find((f) => f.id === e.target?.id);
-            console.log(mainWindow.divList.find((f) => f.id === e.target?.id));
+            if (!thisDivData) {
+                thisDivData = {
+                    id: e.target.id,
+                    left: e.target.left,
+                    top: e.target.top,
+                    width: e.target.width,
+                    height: e.target.height,
+                    color: e.target.fill,
+                    startColumn: startColumn,
+                    startRow: startRow,
+                    endColumn: startColumn,
+                    endRow: startRow,
+                }
+            }
+            mainWindow.divList = [...mainWindow.divList, thisDivData]
+            setDivList((e) => [...mainWindow.divList]);
             console.log(e.target.id);
             thisDivData.left = e.target.left;
             thisDivData.top = e.target.top;
             thisDivData.width = e.target.width;
             thisDivData.height = e.target.height;
+            thisDivData.startColumn = startColumn;
+            thisDivData.startRow = startRow;
+            thisDivData.endColumn = startColumn;
+            thisDivData.endRow = startRow;
             mainWindow.divList = mainWindow.divList.map((f) => {
                 if (f.id === e.target.id) {
                     return thisDivData;
@@ -865,6 +1124,14 @@ function TemplateMaker() {
                     return f;
                 }
             });
+            // remove duplicates
+            mainWindow.divList = mainWindow.divList.filter((f, i) => {
+                let index = mainWindow.divList.findIndex((e) => e.id === f.id);
+                return index === i;
+            });
+
+            setDivList((e) => [...mainWindow.divList]);
+            dispatch(assignTemplate(calcTemplate()));
         });
 
         newCanvas.add(toolBarGroup);
@@ -875,7 +1142,7 @@ function TemplateMaker() {
         setMainRect(mainWindow);
         setBorderRect(rect);
         // group selected box and main window
-        newCanvas.add(mainWindow);
+
         newCanvas.add(selectedBox);
 
 

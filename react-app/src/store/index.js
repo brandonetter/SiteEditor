@@ -1,11 +1,12 @@
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
-import session from './session'
-import modals from './modals'
-
+import session from './session';
+import modals from './modals';
+import shared from './templates';
 const rootReducer = combineReducers({
   session,
-  modals
+  modals,
+  shared
 });
 
 

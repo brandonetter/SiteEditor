@@ -1,6 +1,7 @@
 import './MainPanel.css'
 import { Route, Switch } from 'react-router-dom';
 import TemplateMaker from '../../TemplateMaker';
+import MyTemplates from '../../MyTemplates';
 function MainPanel({ sidebarState }) {
     let mainPanelClass = "dashboard-main-panel";
     if (sidebarState) {
@@ -13,9 +14,14 @@ function MainPanel({ sidebarState }) {
                 <Route path="/dashboard/newTemplate">
                     <TemplateMaker />
                 </Route>
+                <Route path="/dashboard/myTemplates">
+                    <MyTemplates />
+                </Route>
                 <Route path="/dashboard">
                     asdased
                 </Route>
+
+
 
             </Switch>
 
