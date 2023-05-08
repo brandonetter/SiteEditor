@@ -1,6 +1,5 @@
 from .db import db, environment, SCHEMA, add_prefix_for_prod
 
-
 class File(db.Model):
     __tablename__ = 'files'
 
@@ -9,7 +8,7 @@ class File(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     projectid = db.Column(db.Integer, db.ForeignKey('projects.id'), nullable=False)
-    name = db.Column(db.String(40), nullable=False, unique=True)
+    name = db.Column(db.String(40), nullable=False)
     templateid = db.Column(db.Integer, db.ForeignKey('templates.id'), nullable=False)
     createdAt = db.Column(db.DateTime, server_default=db.func.now())
     updatedAt = db.Column(db.DateTime, server_default=db.func.now(),server_onupdate=db.func.now())
@@ -17,6 +16,7 @@ class File(db.Model):
     project = db.relationship('Project', back_populates='files')
 
     file_contents = db.relationship('FileContent', back_populates='file')
+    template = db.relationship('Template', back_populates='files')
 
     @property
     def content(self):
@@ -30,6 +30,8 @@ class File(db.Model):
             'projectid': self.projectid,
             'name': self.name,
             'templateid': self.templateid,
+            'template': self.template.to_dict(),
+            'content': self.file_contents[0].content,
             'createdAt': self.createdAt,
             'updatedAt': self.updatedAt
         }

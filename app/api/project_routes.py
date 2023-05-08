@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify,request
-from flask_login import login_required
+from flask_login import login_required,current_user
 from app.models import User, Project, File, FileContent, Template, PublishedTemplate, db
 
 project_routes = Blueprint('projects', __name__)
@@ -38,6 +38,35 @@ def delete_project(id):
     db.session.commit()
     return project.to_dict()
 
+@project_routes.route('/new', methods=['POST'])
+@login_required
+def create_project():
+    """
+    Creates a project by id
+    """
+    project = Project(
+        name=request.json['name'],
+        userid=current_user.id
+    )
+    userFirstTemplate = Template.query.filter_by(userid=current_user.id).first()
+
+    file = File(
+        name='index.html',
+        templateid=userFirstTemplate.id,
+        project=project
+
+    )
+    fileContent = FileContent(
+        file=file,
+        content=''
+    )
+    db.session.add(file)
+    db.session.add(fileContent)
+
+    db.session.add(project)
+    db.session.commit()
+    return project.to_dict()
+
 @project_routes.route('/<int:id>', methods=['PUT'])
 @login_required
 def update_project(id):
@@ -70,14 +99,17 @@ def create_file(id):
     Creates a new file and adds it to a project by id
     """
     project = Project.query.get(id)
+    template = Template.query.get(request.json['templateid'])
     if project.userid != current_user.id:
         return {'errors': ['Unauthorized']}, 401
     file = File(
         name=request.json['name'],
-        projectid=id
+        projectid=id,
+        templateid=template.id
     )
     fileContent = FileContent(
         file=file,
+        content=''
     )
 
     db.session.add(file)
@@ -150,7 +182,7 @@ def update_file_content(id, fileid):
     fileContent = FileContent.query.get(fileid)
     fileContent.content = request.json['content']
     db.session.commit()
-    return fileContent.to_dict()
+    return file.to_dict()
 
 @project_routes.route('/<int:id>/file/<int:fileid>/content', methods=['GET'])
 @login_required

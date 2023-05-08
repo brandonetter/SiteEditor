@@ -1,0 +1,73 @@
+
+.add-image-modal{
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    right: 0px;
+    top:0px;
+    background-color: #0000005d;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.add-image-content{
+    position: relative;
+    width: 500px;
+    height: 120px;
+    border-radius: 5px;
+    background-color: #e6e6e6;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    filter: drop-shadow(0px 0px 5px #0000006d);
+}
+.add-image-header{
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 0.6rem;
+    padding:0px 20px;
+    position: absolute;
+    top:0px;
+    left:0px;
+}
+.add-image-footer{
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 0.6rem;
+    padding:0px 20px;
+    position: absolute;
+    display: flex;
+    justify-content: flex-end;
+    bottom:0px;
+    right:0px;
+}
+.add-image-body{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+.add-image-body > *{
+    width: 80%;
+}
+.add-image-footer > *{
+    margin-left: 10px;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin-bottom:5px;
+    border: 1px solid #0053A6;
+    color:white;
+    background-color: #0053A6;
+}
+.add-image-footer > *:hover{
+    margin-left: 10px;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin-bottom:5px;
+    color:white;
+    cursor: pointer;
+    border: 1px solid #ffffff;
+    background-color: #3a7ec3;
+}

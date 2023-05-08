@@ -1,0 +1,80 @@
+.create-project{
+    position: absolute;
+    top: 0;
+    left:0;
+    background-color: #00000087;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.create-project-content{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 400px;
+    color: #ffffffc3;
+    height: 200px;
+    background-color: #1C2333;
+    border-radius: 10px;
+    padding: 20px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif    ;
+    filter: drop-shadow(0px 0px 10px #000000de);
+    animation: fadeIn 0.6s ease;
+
+}
+.create-project-input-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+    height: 100px;
+    gap: 10px;
+}
+.create-project-input-container > input{
+    width: 100%;
+    height: 1rem;
+    font-size: 1rem;
+    background-color: #1C2333;
+    border-radius: 5px 5px 0px 0px;
+    border: none;
+    padding: 10px;
+    color: #ffffffc3;
+    border-bottom: 1px solid white;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif    ;
+}
+.create-project-input-container > input:focus{
+    outline: none;
+    border-bottom: 2px  solid #ffffffc3;
+}
+.create-project-button-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    height: 10px;
+    gap: 10px;
+}
+.create-project-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 50px;
+    background-color: #173c90;
+    border-radius: 5px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif    ;
+    filter: drop-shadow(0px 0px 10px #000000de);
+    color: #ffffffc3;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+.create-project-button:hover{
+    background-color: #2349a2c3;
+}

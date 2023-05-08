@@ -6,7 +6,8 @@ import './Sidebar.css';
 import { Link } from 'react-router-dom';
 import { Route, Switch } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
-import { toggleTemplateSave } from '../../../../store/modals';
+import FileView from '../../../FileView';
+import { toggleTemplateSave, toggleCreateProject } from '../../../../store/modals';
 function Sidebar({ state }) {
     const dispatch = useDispatch();
     const history = useHistory();
@@ -24,7 +25,11 @@ function Sidebar({ state }) {
         <div className={sidebarClass}>
             <FontAwesomeIcon icon={faBars} className="dashboard-header-icon" onClick={showHideSidebar} />
             <div className="sidebar-content">
-                <div className="sidebar-button">
+                <div className="sidebar-button" onClick={
+                    () => {
+                        dispatch(toggleCreateProject());
+                    }
+                }>
                     <div className="sidebar-button-content">
                         <FontAwesomeIcon icon={faPlus} className="sidebar-button-icon" />
                         Create Project</div>
@@ -38,7 +43,7 @@ function Sidebar({ state }) {
                 </Link>
 
                 <div className="sidebar-divider"></div>
-                <Link to="/dashboard" className="sidebar-directory">
+                <Link to="/dashboard/myProjects" className="sidebar-directory">
 
                     <FontAwesomeIcon icon={faFolder} className="sidebar-button-icon" />
                     My Projects
@@ -67,8 +72,8 @@ function Sidebar({ state }) {
                         <div className="sidebar-button red" onClick={
                             () => {
 
-                                console.log("template", template);
-                                // window.location.reload();
+                                // console.log("template", template);
+                                window.location.reload();
                             }
                         }>
                             <div className="sidebar-button-content">
@@ -79,6 +84,9 @@ function Sidebar({ state }) {
 
 
                     </Route>
+                    <Route path="/dashboard/projects/:id" component={FileView} />
+
+
 
                 </Switch>
             </div >

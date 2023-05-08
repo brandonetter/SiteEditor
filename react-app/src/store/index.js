@@ -3,10 +3,14 @@ import thunk from 'redux-thunk';
 import session from './session';
 import modals from './modals';
 import shared from './templates';
+import projects from './projects';
+import files from './files';
 const rootReducer = combineReducers({
   session,
   modals,
-  shared
+  shared,
+  projects,
+  files,
 });
 
 

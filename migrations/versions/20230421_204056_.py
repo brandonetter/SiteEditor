@@ -60,7 +60,6 @@ def upgrade():
     sa.ForeignKeyConstraint(['projectid'], ['projects.id'], ),
     sa.ForeignKeyConstraint(['templateid'], ['templates.id'], ),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('name')
     )
     op.create_table('file_contents',
     sa.Column('id', sa.Integer(), nullable=False),

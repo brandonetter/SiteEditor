@@ -1,7 +1,7 @@
-import { getTemplates } from '../../store/templates';
+import { getProjects } from '../../store/projects';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import TemplateBox from './TemplateBox';
+import TemplateBox from './ProjectBox';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import './MyTemplates.css';
@@ -10,10 +10,10 @@ function MyTemplates() {
     const [templates, setTemplates] = useState([]);
     const [loaded, setLoaded] = useState(false);
     const [displayClass, setDisplayClass] = useState('my-templates');
-    const templatesState = useSelector((state) => state.shared.templates);
+    const templatesState = useSelector((state) => state.projects.projects);
     useEffect(() => {
         async function get() {
-            let templatess = await dispatch(getTemplates());
+            let templatess = await dispatch(getProjects());
             //setTemplates(templatess.templates);
         }
 
@@ -23,8 +23,8 @@ function MyTemplates() {
         console.log(templatesState);
         if (!templatesState) return;
         setTimeout(() => setLoaded(true), 600);
-        if (templatesState.templates)
-            setTemplates(templatesState.templates);
+        if (templatesState.projects)
+            setTemplates(templatesState.projects);
         else
             setTemplates(templatesState);
     }, [templatesState])
@@ -32,6 +32,7 @@ function MyTemplates() {
         if (loaded) {
             setDisplayClass('my-templates my-templates-show');
         }
+        console.log(templates);
     }, [loaded])
 
     return (
@@ -39,15 +40,10 @@ function MyTemplates() {
 
             <div className={displayClass}>
 
-                {loaded && templates.map((template) => {
-                    // remove double single quotes
-                    template.content = template.content.replace(/''/g, "'");
-                    // replace single quotes with double quotes
-                    template.content = template.content.replace(/'/g, '"');
-                    let content = JSON.parse(template.content);
+                {loaded && templates.map && templates.map((template) => {
 
                     return (
-                        <TemplateBox name={template.name} templateData={content} id={template.id} key={template.id} />
+                        <TemplateBox name={template.name} key={template.id} id={template.id} />
                     )
                 })}
             </div>

@@ -15,6 +15,7 @@ class Template(db.Model):
     updatedAt = db.Column(db.DateTime, server_default=db.func.now(),server_onupdate=db.func.now())
 
     user = db.relationship('User', back_populates='templates')
+    files = db.relationship('File', back_populates='template')
 
 
     def to_dict(self):

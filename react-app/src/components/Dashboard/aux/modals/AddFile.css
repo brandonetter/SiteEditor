@@ -1,0 +1,35 @@
+.add-file-modal{
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    width: 100vw;
+    height: 100vh;
+    background-color: #00000080;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.add-file-modal-content{
+    width: 300px;
+    height: 200px;
+    background-color: #232a3c;
+    border-radius: 5px;
+
+}
+.add-file-modal-header{
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 1.3rem;
+    color: #ffffffEA;
+    padding:10px;
+}
+.add-file-modal-body{
+    padding: 0px 10px;
+    position: relative;
+    height:150px;
+    display: flex;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 0.8rem;
+    color: #6d707dea;
+    flex-direction: column;
+}

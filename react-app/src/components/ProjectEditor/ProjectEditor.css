@@ -1,0 +1,206 @@
+.editor{
+    width: 65vw;
+    position: absolute;
+    bottom:45px;
+}
+.editor-small{
+    width: 53vw;
+    height: fit-content;
+    position: absolute;
+    bottom:45px;
+}
+.editor .buttons,.editor-small .buttons{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    align-items: center;
+    background-color: #1C2333;
+    width: 100%;
+    height: fit-content;
+    gap:15px;
+}
+
+.buttons > *{
+    margin-left:10px;
+}
+div.DraftEditor-root {
+    border: 1px solid #000;
+    background-color: rgb(242, 242, 234);
+
+    height: 300px;
+    width: 100%;
+    overflow-y: auto;
+  }
+
+.RichEditor-controls{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    align-items: center;
+    background-color: #1C2333;
+    /* width: 100%; */
+    z-index: 1;
+    cursor: pointer;
+    gap:1px;
+}
+.RichEditor-styleButton{
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    margin:5px 2px;
+    padding: 10px;
+    background-color: #173c90;
+    border: 1px solid #ffffffc6;
+    color: #ffffffc6;
+    border-radius: 5px;
+}
+.RichEditor-styleButton:hover{
+    background-color: #ffffffc6;
+    border: 1px solid #173c90;
+    color: #173c90;
+}
+.RichEditor-activeButton{
+    padding: 10px;
+    background-color: #515f7f;
+    border: 1px solid #000000;
+    color: #060606c6;
+}
+.project-editor-template{
+    position: absolute;
+    width: calc(100vh * 1.5625) !important;
+    transform-origin: bottom right !important;
+    height: 100vh !important;
+    transform: scale(0.25);
+}
+.project-editor-template-small{
+    position: absolute;
+    width: calc(100vh * 1.5625) !important;
+    transform-origin: bottom right !important;
+    height: 100vh !important;
+    transform: scale(0.25);
+
+}
+.project-editor-template, .project-editor-template-small{
+    position: absolute;
+
+    bottom: 50px;
+    right: 50px;
+    border: 1px solid #000000;
+    background-color: #1C2333;
+    z-index: 1;
+}
+.project-editor-template >div> p, .project-editor-template-small >div> p{
+    padding: 0;
+    margin: 0;
+
+}
+.project-editor-template > *, .project-editor-template-small > *{
+    opacity: 0.45;
+}
+.project-editor-template > *:hover, .project-editor-template-small > *:hover{
+    opacity: 1;
+    cursor: pointer;
+}
+.top-bar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1C2333;
+    width: 99vw;
+    height: 45px;
+    margin-left: -25px;
+    margin-top:-15px;
+    padding: 0 15px;
+    z-index: 1;
+    transition: all 0.5s;
+}
+.top-bar-small{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1C2333;
+    width: calc(99vw - 15.4rem);
+    margin-left: -25px;
+    margin-top:-15px;
+    height: 45px;
+    padding: 0 15px;
+    z-index: 1;
+    transition: all 0.5s;
+}
+.top-bar-button{
+    background-color: #0053A6;
+    border: 1px solid #ffffffc6;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    color: #ffffffee;
+    padding: 5px 9px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    border-radius: 10px;
+    user-select: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.top-bar-button:hover{
+    background-color: #176abd;
+    border: 1px solid #ffffff;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    color: #ffffff;
+    padding: 5px 9px;
+    border-radius: 10px;
+    user-select: none;
+    cursor: pointer;
+}
+.top-bar-right{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+.toolbar-break{
+    width: 2px;
+    margin: 0 10px;
+    height: 30px;
+    background-color: #ffffff27;
+}
+.top-bar-left{
+    display: flex;
+    gap: 10px;
+    margin-left:20px;
+    font-size:1.1rem;
+    color: #ffffffc6;
+}
+.editor-selected-preview>p{
+    padding: 0;
+    margin: 0;
+}
+.top-bar-preview{
+    font-size:1.1rem;
+}
+.childrenNoSelect > *{
+    position: relative;
+    margin-top: 0px;
+    user-select: none;
+
+}
+.childrenNoSelect > p{
+    cursor: pointer;
+    display: block !important;
+}
+.Draftail-Editor{
+
+    width: 30vw !important;
+    height: 45px;
+    background-color: #1C2333;
+    z-index: 1;
+}
+.spinner{
+    animation: spin 1s infinite linear;
+}
+figure{
+    margin: 0 !important;
+    padding: 0 !important;
+    display: inline;
+}
+br{
+   height:0px !important;
+}

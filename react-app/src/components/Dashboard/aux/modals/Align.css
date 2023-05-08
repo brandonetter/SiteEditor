@@ -1,0 +1,71 @@
+.align-modal{
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    right: 5px;
+    top:110px;
+    border-radius: 5px;
+    background-color: #1C2333;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform-origin: top right;
+    transform: scale(0.8);
+    filter: drop-shadow(0px 0px 5px #0000006d);
+}
+.align-modal-container{
+    display: flex;
+    width:200px;
+
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.align-modal-container > *:hover{
+    cursor: pointer;
+    background-color: #35405a;
+    color: #ffffff;
+}
+.align-up,.align-down,.align-left,.align-right,.align-down-right,.align-down-left,.align-up-right,.align-up-left,.align-center{
+    width: 50px;
+    height: 50px;
+    border-radius: 5px;
+    background-color: #252e45;
+    display: flex;
+    justify-content: center;
+    color:rgba(240, 248, 255, 0.347);
+    align-items: center;
+    margin: 5px;
+    transition: all 0.5s;
+}
+.align-up-left > *{
+    transform-origin: center;
+    transform: rotate(-45deg);
+}
+.align-up-right > *{
+    transform-origin: center;
+    transform: rotate(45deg);
+}
+.align-down-left > *{
+    transform-origin: center;
+    transform: rotate(-135deg);
+}
+.align-down-right > *{
+    transform-origin: center;
+    transform: rotate(135deg);
+}
+
+.align-remove{
+    width: 150px;
+    height: 20px;
+    border-radius: 5px;
+    background-color: #252e45;
+    display: flex;
+    justify-content: center;
+    color:rgba(240, 248, 255, 0.347);
+    align-items: center;
+    margin: 2px;
+    transition: all 0.5s;
+}

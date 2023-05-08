@@ -1,0 +1,54 @@
+.small{
+    font-size: 2.2rem;
+}
+.file-view{
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+.file-view-show{
+    opacity: 1;
+}
+.file{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 80%;
+    height: 20px;
+    background-color: #232a3c;
+    border-radius: 5px;
+    padding: 0 1rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+}
+.file-display{
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+.file-display-project-name{
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+.file-display-add-file{
+
+    display:flex;
+    margin-left:1rem;
+    transform-origin: center;
+    transform: scale(0.6);
+    opacity: 0.2;
+    color: #ffffffEA;
+    padding:2px;
+    border-radius: 5px;
+    border: 1px solid #ffffffEA;
+    background-color: #305376;
+}
+.file-display-add-file:hover{
+    cursor: pointer;
+    opacity: 1;
+    color: #ffffffEA;
+    padding:2px;
+    border-radius: 5px;
+    border: 1px solid #ffffffEA;
+    background-color: #0053A6;
+}

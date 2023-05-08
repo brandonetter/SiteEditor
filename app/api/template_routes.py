@@ -34,8 +34,12 @@ def delete_template(id):
     template = Template.query.get(id)
     if template.userid != current_user.id:
         return {'errors': ['Unauthorized']}, 401
-    db.session.delete(template)
-    db.session.commit()
+    try:
+        db.session.delete(template)
+        db.session.commit()
+        return template.to_dict()
+    except:
+        return {'errors': ['Cannot Delete, Template used in a Project']}, 401
     return template.to_dict()
 
 @template_routes.route('/<int:id>', methods=['PUT'])
@@ -59,7 +63,7 @@ def create_template():
     """
     print(request.json)
 
-    content = [request.json['gridTemplate'], request.json['divs']]
+    content = {'template':request.json['gridTemplate'], 'divs':request.json['divs']}
     # escape single quotes
     content = str(content).replace("'", "''")
 

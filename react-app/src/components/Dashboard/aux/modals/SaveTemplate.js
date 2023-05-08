@@ -4,6 +4,7 @@ import { faBars, faTableColumns, faPlus, faFolder, faSave, faX } from '@fortawes
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleTemplateSave } from '../../../../store/modals';
 import { saveTemplate } from '../../../../store/templates';
+import { addToast } from '../../../../store/session'
 import { useState } from 'react';
 function SaveTemplate() {
     const dispatch = useDispatch();
@@ -12,12 +13,25 @@ function SaveTemplate() {
     const trySaveTemplate = () => {
         if (!name || !template) return;
         let { gridTemplate, divs } = template;
+        //replace numbers with strings
+        divs = divs.map((div) => {
+            let { startColumn, endColumn, startRow, endRow, color } = div;
+            return {
+                startColumn: startColumn.toString(),
+                endColumn: endColumn.toString(),
+                startRow: startRow.toString(),
+                endRow: endRow.toString(),
+                color: color
+            }
+        })
         let templateData = {
             name: name,
             gridTemplate: gridTemplate,
-            divs: divs
+            divs: divs,
         }
         dispatch(saveTemplate(templateData));
+        dispatch(toggleTemplateSave());
+        dispatch(addToast({ type: 'save', message: 'Template saved successfully' }));
     }
 
     const generateTemplatePreview = () => {
