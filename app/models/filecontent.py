@@ -8,7 +8,7 @@ class FileContent(db.Model):
         __table_args__ = {'schema': SCHEMA}
 
     id = db.Column(db.Integer, primary_key=True)
-    fileid = db.Column(db.Integer, db.ForeignKey('files.id'), nullable=False)
+    fileid = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('files.id')), nullable=False)
     content = db.Column(db.Text, nullable=False, unique=False)
     createdAt = db.Column(db.DateTime, server_default=db.func.now())
     updatedAt = db.Column(db.DateTime, server_default=db.func.now(),server_onupdate=db.func.now())

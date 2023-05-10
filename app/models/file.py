@@ -7,9 +7,9 @@ class File(db.Model):
         __table_args__ = {'schema': SCHEMA}
 
     id = db.Column(db.Integer, primary_key=True)
-    projectid = db.Column(db.Integer, db.ForeignKey('projects.id'), nullable=False)
+    projectid = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('projects.id')), nullable=False)
     name = db.Column(db.String(40), nullable=False)
-    templateid = db.Column(db.Integer, db.ForeignKey('templates.id'), nullable=False)
+    templateid = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('templates.id')), nullable=False)
     createdAt = db.Column(db.DateTime, server_default=db.func.now())
     updatedAt = db.Column(db.DateTime, server_default=db.func.now(),server_onupdate=db.func.now())
 
