@@ -14,7 +14,7 @@ class Project(db.Model):
     updatedAt = db.Column(db.DateTime, server_default=db.func.now(),server_onupdate=db.func.now())
 
     user = db.relationship('User', back_populates='projects')
-    files = db.relationship('File', back_populates='project')
+    files = db.relationship('File', back_populates='project',cascade="all, delete-orphan")
 
     @property
     def list_files(self):

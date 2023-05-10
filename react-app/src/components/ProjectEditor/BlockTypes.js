@@ -22,6 +22,10 @@ export const BLOCK_TYPES = [
 ];
 
 export const styleMap = {
+    'red': {
+        color: 'red',
+    },
+
     'CODE': {
         backgroundColor: 'rgba(0, 0, 0, 0.3)',
         color: 'white',

@@ -3,7 +3,7 @@ import { faSpinnerThird, faPencil, faTrash } from '@fortawesome/free-solid-svg-i
 import { useDispatch } from 'react-redux';
 import { Redirect } from 'react-router-dom'
 import { useState } from 'react';
-import { toggleDeleteTemplate } from '../../store/modals';
+import { toggleDeleteProject } from '../../store/modals';
 function TemplateBox({ name, templateData, id }) {
     const dispatch = useDispatch();
     const [redirect, setRedirect] = useState(false);
@@ -40,7 +40,7 @@ function TemplateBox({ name, templateData, id }) {
                     }
                     />
                     <FontAwesomeIcon icon={faTrash} className="template-box-name-icon" onClick={
-                        () => dispatch(toggleDeleteTemplate(id))
+                        () => dispatch(toggleDeleteProject(id))
                     } />
                 </div>
             </div>

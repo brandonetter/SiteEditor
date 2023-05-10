@@ -89,3 +89,11 @@
     border: #ac2323 1px solid;
     background-color: #6f0808 !important;
 }
+.sidebar-user{
+    left:190px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

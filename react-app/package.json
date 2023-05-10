@@ -10,6 +10,8 @@
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
+    "@uiw/react-color": "^1.2.1",
+    "@uiw/react-color-wheel": "^1.2.1",
     "draft-convert": "^2.1.13",
     "draft-js": "^0.10.5",
     "draft-js-export-html": "^1.4.1",

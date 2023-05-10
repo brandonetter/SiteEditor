@@ -5,3 +5,211 @@
 .hidden {
   display: none;
 }
+.landing{
+  height: 60px !important;
+}
+.landing >img{
+  width: 200px;
+  object-fit: cover;
+}
+.navigation{
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+.navigation-header{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+
+  color:rgb(240, 240, 240);
+  font-family: 'Braah One', sans-serif;
+
+}
+.fade-out-left{
+  animation: fadeOutLeft 1.4s;
+}
+.fade-in-right{
+  animation: fadeInRight 1.4s;
+}
+@keyframes fadeOutLeft {
+  0% {
+    opacity: 0.8;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+}
+@keyframes fadeOutRight {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+@keyframes fadeInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.splash-content{
+  opacity: 0.8;
+  z-index:1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  color:rgb(240, 240, 240);
+  font-family: 'Braah One', sans-serif;
+  font-size: 1.5rem;
+  text-align: center;
+  padding: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  transition: all 0.5s ease-in-out;
+  transform-origin: center left;
+  animation: unroll 0.1s ease 1 forwards;
+}
+
+.splash-image{
+  z-index:0;
+  width:800px;
+
+}
+.navigation-buttons{
+  display:flex;
+  gap:20px;
+  position:relative;
+  top:0px;
+  animation: dropdown 1s ease-in-out 1;
+
+}
+
+@keyframes dropdown{
+  0%{
+    opacity: 0;
+    top:-100px;
+  }
+  70%{
+    opacity: 0;
+  }
+  100%{
+    opacity: 1;
+    top:0px;
+  }
+}
+
+
+.navigation-button{
+  background-color: #0053A6;
+  color:rgb(0, 0, 0);
+  border: 2px solid rgb(240, 240, 240);
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 1.2rem;
+  color:white;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  transition: all 0.5s ease-in-out;
+  transform-origin: center left;
+
+}
+.navigation-button:hover{
+  background-color: #1b6bbb;
+  color:rgb(255, 255, 255);
+  border: 2px solid rgb(255, 255, 255);
+  cursor: pointer;
+
+}
+.login-modal{
+  position:absolute;
+  width: 100vw;
+  height:100vh;
+  z-index: 1000;
+  top:0;
+  left:0;display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color:#000000b5;
+}
+.login-modal-content{
+  transform-origin: center;
+  transform: scale(2);
+  position: relative;
+  width:250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color:#1C2333;
+  gap: 10px;
+  animation: fadeDown 0.5s ease-in-out 1;
+  color:rgb(240, 240, 240);
+  padding:20px;
+  border-radius:10px;
+  filter:drop-shadow(0px 0px 10px rgb(0, 0, 0));
+  font-family: 'Braah One', sans-serif;
+}
+.login-modal-buttons{
+  display:flex;
+  gap:20px;
+  position:relative;
+  top:0px;
+
+}
+.login-modal-x-button{
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.7rem;
+  color:rgb(190, 190, 190);
+  cursor: pointer;
+}
+.login-modal-x-button:hover{
+  color:rgb(255, 255, 255);
+}
+@keyframes fadeDown{
+  0%{
+    opacity: 0;
+    top:-50px;
+  }
+
+  100%{
+    opacity: 1;
+    top:0px;
+  }
+}
+
+
+.login-modal-button{
+  background-color: #0053A6;
+  color:rgb(0, 0, 0);
+  border: 2px solid rgb(240, 240, 240);
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 1rem;
+  color:white;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  transition: all 0.5s ease-in-out;
+  transform-origin: center left;
+
+}
+.login-modal-button:hover{
+  background-color: #2d7ac7;
+  color:rgb(255, 255, 255);
+  border: 2px solid rgb(255, 255, 255);
+  cursor: pointer;
+
+}

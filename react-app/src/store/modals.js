@@ -18,6 +18,50 @@ const HIDE_ADD_FILE = "modals/HIDE_ADD_FILE";
 const SHOW_ADD_LINK = "modals/SHOW_ADD_LINK";
 const HIDE_ADD_LINK = "modals/HIDE_ADD_LINK";
 const SET_ADD_LINK_FUNCTION = "modals/SET_ADD_LINK_FUNCTION";
+const SHOW_DELETE_PROJECT = "modals/SHOW_DELETE_PROJECT";
+const HIDE_DELETE_PROJECT = "modals/HIDE_DELETE_PROJECT";
+const SHOW_COLOR = "modals/SHOW_COLOR";
+const HIDE_COLOR = "modals/HIDE_COLOR";
+const SET_COLOR_FUNCTION = "modals/SET_COLOR_FUNCTION";
+const SET_COLOR = "modals/SET_COLOR";
+const SHOW_USER = "modals/SHOW_USER";
+const HIDE_USER = "modals/HIDE_USER";
+const SET_BIG_LOADER = "modals/SET_BIG_LOADER";
+const HIDE_BIG_LOADER = "modals/HIDE_BIG_LOADER";
+
+const showBigLoader = () => ({
+    type: SET_BIG_LOADER,
+});
+const hideBigLoader = () => ({
+    type: HIDE_BIG_LOADER,
+});
+
+
+const showUser = () => ({
+    type: SHOW_USER,
+});
+const hideUser = () => ({
+    type: HIDE_USER,
+});
+
+const showColor = () => ({
+    type: SHOW_COLOR,
+});
+const hideColor = () => ({
+    type: HIDE_COLOR,
+});
+const setColorFunction = (func) => ({
+    type: SET_COLOR_FUNCTION,
+    payload: func,
+});
+
+const showDeleteProject = (id) => ({
+    type: SHOW_DELETE_PROJECT,
+    payload: id,
+});
+const hideDeleteProject = () => ({
+    type: HIDE_DELETE_PROJECT,
+});
 
 const showSidebar = () => ({
     type: SHOW_SIDEBAR,
@@ -89,10 +133,15 @@ const hideTemplateSave = () => ({
 });
 
 
-const initialState = { addLinkFunction: null, addLink: false, addFile: false, addImage: false, addImageFunction: null, sidebar: true, templateSave: false, deleteTemplate: false, deleteID: null, createProject: false, align: false, alignFunction: null };
+const initialState = { bigLoader: false, user: false, prevColor: null, color: false, setColorFunction: null, addLinkFunction: null, addLink: false, addFile: false, addImage: false, addImageFunction: null, sidebar: true, templateSave: false, deleteTemplate: false, deleteID: null, createProject: false, align: false, alignFunction: null, deleteProject: false, deleteProjectID: null };
 
 export const hideAlignModal = () => (dispatch) => {
     dispatch(hideAlign());
+    return {};
+};
+export const setPrevColor = (color) => (dispatch) => {
+    console.log("setting prev color", color);
+    dispatch({ type: SET_COLOR, payload: color });
     return {};
 };
 
@@ -104,6 +153,20 @@ export const hideAddImageModal = () => (dispatch) => {
     dispatch(hideAddImage());
     return {};
 };
+
+export const toggleColor = () => (dispatch, getState) => {
+    const { color } = getState().modals;
+    if (color) {
+        dispatch(hideColor());
+    } else {
+        dispatch(showColor());
+    }
+};
+export const setColorFunctionS = (func) => (dispatch) => {
+    dispatch(setColorFunction(func));
+    return {};
+};
+
 
 export const toggleAddImage = () => (dispatch, getState) => {
     const { addImage } = getState().modals;
@@ -192,6 +255,33 @@ export const toggleDeleteTemplate = (id) => (dispatch, getState) => {
     }
 };
 
+export const toggleDeleteProject = (id) => (dispatch, getState) => {
+    const { deleteProject } = getState().modals;
+    if (deleteProject) {
+        dispatch(hideDeleteProject());
+    } else {
+        dispatch(showDeleteProject(id));
+    }
+};
+export const toggleUser = () => (dispatch, getState) => {
+    const { user } = getState().modals;
+    if (user) {
+        dispatch(hideUser());
+    } else {
+        dispatch(showUser());
+    }
+};
+
+export const toggleBigLoader = () => (dispatch, getState) => {
+    const { bigLoader } = getState().modals;
+    if (bigLoader) {
+        dispatch(hideBigLoader());
+    } else {
+        dispatch(showBigLoader());
+    }
+};
+
+
 
 
 export default function reducer(state = initialState, action) {
@@ -234,6 +324,27 @@ export default function reducer(state = initialState, action) {
             return { ...state, addLink: false };
         case SET_ADD_LINK_FUNCTION:
             return { ...state, addLinkFunction: action.payload };
+        case SHOW_DELETE_PROJECT:
+            return { ...state, deleteProject: true, deleteProjectID: action.payload };
+        case HIDE_DELETE_PROJECT:
+            return { ...state, deleteProject: false };
+        case SHOW_COLOR:
+            return { ...state, color: true };
+        case HIDE_COLOR:
+            return { ...state, color: false };
+        case SET_COLOR_FUNCTION:
+            return { ...state, setColorFunction: action.payload };
+        case SET_COLOR:
+            return { ...state, prevColor: action.payload };
+        case SHOW_USER:
+            return { ...state, user: true };
+        case HIDE_USER:
+            return { ...state, user: false };
+        case SET_BIG_LOADER:
+            return { ...state, bigLoader: true };
+        case HIDE_BIG_LOADER:
+            return { ...state, bigLoader: false };
+
 
         default:
             return state;

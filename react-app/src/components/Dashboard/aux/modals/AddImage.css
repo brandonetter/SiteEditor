@@ -71,3 +71,24 @@
     border: 1px solid #ffffff;
     background-color: #3a7ec3;
 }
+.add-link-toggle{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    margin-left:90px;
+}
+.add-link-toggle>input, .add-link-toggle>select{
+    width: calc(100% - 123px);
+}
+.add-link-toggle-button{
+    margin-left: 0px;
+    border-radius: 5px;
+    padding: 3px 3px;
+    transform: scale(0.7);
+    z-index: 1;
+    margin-bottom:5px;
+    border: 1px solid #0053A6;
+    color:white;
+    background-color: #0053A6;
+}

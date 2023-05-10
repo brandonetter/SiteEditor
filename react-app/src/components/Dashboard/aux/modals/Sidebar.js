@@ -1,13 +1,13 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleSidebar } from '../../../../store/modals';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faTableColumns, faPlus, faFolder, faSave, faRemove } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faTableColumns, faPlus, faFolder, faSave, faRemove, faUser } from '@fortawesome/free-solid-svg-icons';
 import './Sidebar.css';
 import { Link } from 'react-router-dom';
 import { Route, Switch } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import FileView from '../../../FileView';
-import { toggleTemplateSave, toggleCreateProject } from '../../../../store/modals';
+import { toggleTemplateSave, toggleCreateProject, toggleUser } from '../../../../store/modals';
 function Sidebar({ state }) {
     const dispatch = useDispatch();
     const history = useHistory();
@@ -16,6 +16,10 @@ function Sidebar({ state }) {
     const showHideSidebar = () => {
         dispatch(toggleSidebar());
     }
+    const showHideUserBar = () => {
+        dispatch(toggleUser());
+    }
+
     let sidebarClass = "sidebar";
     if (state) {
         sidebarClass += " sidebar sidebar-show";
@@ -23,7 +27,15 @@ function Sidebar({ state }) {
 
     return (
         <div className={sidebarClass}>
-            <FontAwesomeIcon icon={faBars} className="dashboard-header-icon" onClick={showHideSidebar} />
+            <div className="sidebar-header">
+                <FontAwesomeIcon icon={faBars} className="dashboard-header-icon" onClick={showHideSidebar} />
+                <div className=''>
+                    <FontAwesomeIcon icon={faUser} className="dashboard-header-icon sidebar-user"
+                        onClick={showHideUserBar}
+                    />
+
+                </div>
+            </div>
             <div className="sidebar-content">
                 <div className="sidebar-button" onClick={
                     () => {

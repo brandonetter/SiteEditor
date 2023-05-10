@@ -35,8 +35,25 @@ export const setProjectThunk = (id) => async (dispatch) => {
     return data;
 };
 
+export const deleteProject = (id) => async (dispatch, getState) => {
+    const response = await fetch(`/api/projects/${id}`, {
+        method: "DELETE",
+    });
+    const data = await response.json();
+    if (data.errors) {
+        return data;
+    }
+    // remove the template from the store
+    let tstate = getState().projects.projects;
+    let newProjects = [];
+    if (tstate.projects)
+        newProjects = tstate.projects.filter((project) => project.id !== id);
+    dispatch(setProjects(newProjects));
 
-export const createProject = (projectData) => async (dispatch) => {
+    return data;
+};
+
+export const createProject = (projectData, templateID) => async (dispatch) => {
     const name = projectData;
     const response = await fetch("/api/projects/new", {
         method: "POST",
@@ -45,6 +62,7 @@ export const createProject = (projectData) => async (dispatch) => {
         },
         body: JSON.stringify({
             name,
+            templateID,
         }),
     });
     const data = await response.json();

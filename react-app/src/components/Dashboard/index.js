@@ -9,6 +9,9 @@ import Align from './aux/modals/Align'
 import AddImage from './aux/modals/AddImage'
 import AddFile from './aux/modals/AddFile'
 import AddLink from './aux/modals/AddLink'
+import DeleteProject from './aux/modals/DeleteProject'
+import Color from './aux/modals/Color'
+import User from './aux/modals/User'
 function Dashboard() {
     const modals = useSelector((state) => state.modals);
 
@@ -17,6 +20,7 @@ function Dashboard() {
 
             <Header />
             <MainPanel sidebarState={modals.sidebar} />
+
             <Sidebar state={modals.sidebar} />
             {modals.templateSave && (
                 <SaveTemplate />
@@ -40,6 +44,15 @@ function Dashboard() {
             {modals.addLink && (
                 <AddLink />
             )}
+            {modals.deleteProject && (
+                <DeleteProject />
+            )}
+            {modals.color && (
+                <Color />
+            )}{modals.user && (
+                <User />
+            )}
+
 
         </div>
     )

@@ -15,7 +15,7 @@ class File(db.Model):
 
     project = db.relationship('Project', back_populates='files')
 
-    file_contents = db.relationship('FileContent', back_populates='file')
+    file_contents = db.relationship('FileContent', back_populates='file',cascade="all, delete-orphan")
     template = db.relationship('Template', back_populates='files')
 
     @property

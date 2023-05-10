@@ -55,3 +55,31 @@ body {
   cursor: row-resize;
 }
 
+.big-loader{
+  position: absolute;
+  top:0;
+  left:0;
+  width:100vw;
+  height:100vh;
+  background-color: #0E1525;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.big-loader-spinner{
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+.big-loader-icon{
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  color:white;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

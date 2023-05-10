@@ -2,7 +2,7 @@ import { Editor, EditorState, RichUtils, ContentState, Modifier, convertToRaw, C
 import 'draft-js/dist/Draft.css';
 import './ProjectEditor.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBold, faItalic, faUnderline, faStrikethrough, faSave, faAlignJustify, faImage, faUpload, faSpinner, faLink } from '@fortawesome/free-solid-svg-icons';
+import { faBold, faItalic, faUnderline, faStrikethrough, faSave, faAlignJustify, faImage, faUpload, faSpinner, faLink, faSquare } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState, useRef } from 'react';
 import StyleButton from './StyleButton';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,12 +14,13 @@ import { convertFromHTML, convertToHTML } from "draft-convert"
 import { ENTITY_TYPE, BLOCK_TYPE } from 'draftail';
 import { saveFileContents } from '../../store/files';
 import { addToast } from '../../store/session';
-import { toggleAlign, setAddLinkFunctionS, toggleAddLink, setAlignFunctionS, hideAlignModal, showAddImageModal, hideAddImageModal, setAddImageFunctionS, toggleAddImage } from '../../store/modals';
+import { toggleAlign, toggleColor, setPrevColor, setColorFunctionS, setAddLinkFunctionS, toggleAddLink, setAlignFunctionS, hideAlignModal, showAddImageModal, hideAddImageModal, setAddImageFunctionS, toggleAddImage } from '../../store/modals';
 function ProjectEditor(props) {
 
 
     const [boldState, setBoldState] = useState('inactive-button');
     const file = useSelector(state => state.files.file);
+    const files = useSelector(state => state.files.files);
     const sideBar = useSelector(state => state.modals.sidebar);
     const addImageModal = useSelector(state => state.modals.addImage);
     const dispatch = useDispatch();
@@ -33,6 +34,8 @@ function ProjectEditor(props) {
     const [previewContents, setPreviewContents] = useState(null);
     const [previewID, setPreviewID] = useState(null);
     const [divStyles, setDivStyles] = useState(null);
+    const [divBackground, setDivBackground] = useState(null);
+
     const [save, setSave] = useState(false);
     const [fullPreview, setFullPreview] = useState(false);
     const [saveButtonLoader, setSaveButtonLoader] = useState(false);
@@ -69,7 +72,7 @@ function ProjectEditor(props) {
                 return <img src={block.data.src} alt={block.data.alt} style={{ float: block.data.float, height: block.data.height + 'px' }} />
             }
             if (block.type === 'link' || block.type === "LINK") {
-                return <a href={block.data.url}>{block.anchor}</a>
+                return <a href={block.data.url} data-local={block.data.isLocal}>{block.data.anchor}</a>
             }
 
             return null
@@ -83,7 +86,7 @@ function ProjectEditor(props) {
             }
             if (entity.type === 'link' || entity.type === "LINK") {
                 console.log(entity);
-                return <a href={entity.data.url}>{entity.data.anchor}</a>
+                return <a href={entity.data.url} data-local={entity.data.isLocal}>{entity.data.anchor}</a>
             }
             if (entity.type === ENTITY_TYPE.HORIZONTAL_RULE) {
                 return <hr />
@@ -112,6 +115,7 @@ function ProjectEditor(props) {
             let divs = content.divs;
             let divContent = [];
             let divStylesList = [];
+            let divBackgroundList = [];
             let loadedContent = file.content;
             loadedContent = loadedContent.split("</head>");
             loadedContent = loadedContent[1];
@@ -121,6 +125,8 @@ function ProjectEditor(props) {
             for (let i = 0; i < divs.length; i++) {
                 if (loadedContent) {
                     divContent.push(main[i].innerHTML);
+                    console.log(main[i].style.backgroundColor);
+                    divBackgroundList.push(main[i].style.backgroundColor);
                     if (main[i].style?.display === 'flex') {
                         let obj = {
                             display: main[i].style.display,
@@ -137,8 +143,12 @@ function ProjectEditor(props) {
                     divStylesList.push('');
                 }
             }
+            setDivBackground(divBackgroundList);
             setDivStyles(divStylesList);
             setWorkingContents(divContent);
+            // set editor state to loaded content
+            setPreviewDimensions(false);
+            //setEditorState(EditorState.createEmpty());
         }
     }, [file])
     // useEffect(() => {
@@ -167,10 +177,13 @@ function ProjectEditor(props) {
         htmlToEntity: (nodeName, node, createEntity) => {
             // a tags will become LINK entities, marked as mutable, with only the URL as data.
             if (nodeName === "a") {
-                console.log(node);
-                return createEntity('link', "MUTABLE", { url: node.href, anchor: node.innerText })
-            }
+                let isLocal = node.getAttribute('data-local');
 
+                return createEntity('link', "MUTABLE", { url: node.href, anchor: node.innerText, isLocal: isLocal })
+            }
+            if (nodeName === "span") {
+                return null
+            }
             if (nodeName === "img") {
                 // remove 'px' from height
                 let height = node.style.height;
@@ -189,7 +202,27 @@ function ProjectEditor(props) {
 
             return null
         },
-        htmlToBlock: (nodeName) => {
+        htmlToStyle: (nodeName, node, currentStyle) => {
+            console.log(nodeName, node, currentStyle);
+            if (nodeName === "span") {
+                return currentStyle.add("red")
+            }
+            return currentStyle
+        },
+
+        htmlToBlock: (nodeName, data) => {
+            console.log(nodeName, data);
+            if (nodeName === "span") {
+                return data;
+                return {
+                    type: "paragraph",
+                    style: "unstyled",
+                    inlineStyleRanges: [{ offset: 0, style: 'red', length: 25 }],
+
+                    data: {},
+
+                }
+            }
             if (nodeName === "hr" || nodeName === "img" || nodeName === "a") {
                 // "atomic" blocks is how Draft.js structures block-level entities.
                 return "atomic"
@@ -215,12 +248,14 @@ function ProjectEditor(props) {
             }
             // get with and height of div
             let width = etarget.offsetWidth;
-            let height = etarget.offsetHeight; setPreviewID(etarget.id);
+            let height = etarget.offsetHeight;
+            setPreviewID(etarget.id);
             // get ratio of div
             let ratio = width / height;
             setPreviewDimensions(ratio);
             // convert target innerHTML to draftjs
             let html = etarget.innerHTML;
+
             setPreviewContents(html);
 
             //setEditorState(EditorState.createWithContent(state, decorator));
@@ -282,19 +317,24 @@ function ProjectEditor(props) {
                 // replace flexWrap with flex-wrap
 
             }
+            let colorOfDiv = divBackground?.[i];
             // remove the first <p></p> from workingContents
             let workingContent = workingContents?.[i];
             if (workingContent) {
                 workingContent = workingContent.replace(/<p><\/p>/, '<p style="margin:0;padding:0"></p>');
+
             }
 
             let { startColumn, endColumn, startRow, endRow, color } = divs[i];
             divData += `
            <div id=${i}  class='childrenNoSelect' style="
            ${divStyle}
-           width:100%;height:100%;grid-column: ${startColumn} / span ${endColumn}; grid-row: ${startRow} / span ${endRow}; background-color: ${color};">
+           width:100%;height:100%;grid-column: ${startColumn} / span ${endColumn}; grid-row: ${startRow} / span ${endRow}; background-color: ${colorOfDiv || color};">
            ${workingContent}
            </div>
+
+
+
            `
 
         }
@@ -312,6 +352,27 @@ function ProjectEditor(props) {
 
         setTimeout(() => setFullPreview(`
         <head>
+        <script>
+        document.addEventListener('DOMContentLoaded', ()=>{
+        // get all links
+          let links = document.querySelectorAll('[data-local="true"]');
+          // loop through links
+          for(let i = 0; i < links.length; i++){
+              // add event listener
+              links[i].addEventListener('click', (e)=>{
+                  // prevent default
+                  e.preventDefault();
+                  // get href
+                  let href = e.target.href;
+                  // get anchor
+                  let anchor = href.split('http://local/')[1];
+                  // get element
+                  opener.setWindow(anchor);
+              }
+              )
+          }
+        })
+          </script>
         <style>
         body{
             margin:0;
@@ -340,6 +401,20 @@ function ProjectEditor(props) {
             </div >
         )
 
+    }
+
+    window.setWindow = (anchor) => {
+        // this function called from the child window
+        // and communicates the new HTML to send to the child window
+        let index = files.findIndex(file => file.name === anchor);
+
+        let previewWindow = window.open('', 'preview', `width=${1600 / 1.2},height=${900 / 1.2}`);
+        previewWindow.document.write(`
+
+            ${files[index].content}
+            `);
+        previewWindow.document.close();
+        console.log(files[index]);
     }
 
     const showFullPreview = () => {
@@ -422,6 +497,12 @@ function ProjectEditor(props) {
                     dispatch(toggleAddLink()); dispatch(setAddLinkFunctionS(addLink));
                 }}>
                     <FontAwesomeIcon icon={faLink} />
+                </div>
+                <div className='RichEditor-styleButton' onMouseDown={() => {
+                    //dispatch(toggleAddLink()); dispatch(setAddLinkFunctionS(addLink));
+                    addStyledDiv({ backgroundColor: 'red', fontFamily: 'Courier New', padding: '10px' }, 'hello');
+                }}>
+                    <FontAwesomeIcon icon={faSquare} />
                 </div>
             </div>
         );
@@ -553,6 +634,21 @@ function ProjectEditor(props) {
         }
     }
 
+    const addStyledDiv = (style, text) => {
+        const contentState = editorState.getCurrentContent();
+        const contentStateWithEntity = contentState.createEntity(
+            'styledDiv',
+            'MUTABLE',
+            { text: text, style: style },)
+        const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+        let newEditorState = EditorState.set(editorState, { currentContent: contentStateWithEntity });
+        newEditorState = AtomicBlockUtils.insertAtomicBlock(newEditorState, entityKey, '  ');
+        //dispatch(toggleAddStyledDiv());
+        // SETSTATE
+        setEditorState(newEditorState);
+    }
+
+
     const addImage = (url, height, float) => {
 
         const contentState = editorState.getCurrentContent();
@@ -568,12 +664,15 @@ function ProjectEditor(props) {
         setEditorState(newEditorState);
     }
 
-    const addLink = (url, text) => {
+    const addLink = (url, text, isLocal) => {
         const contentState = editorState.getCurrentContent();
+        if (isLocal) {
+            url = "http://local/" + url;
+        }
         const contentStateWithEntity = contentState.createEntity(
             'link',
             'MUTABLE',
-            { url: url, anchor: text },)
+            { url: url, anchor: text, isLocal: isLocal },)
         const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
         let newEditorState = EditorState.set(editorState, { currentContent: contentStateWithEntity });
 
@@ -613,6 +712,20 @@ function ProjectEditor(props) {
                         </div>
                     </div>
 
+
+                    <div
+                        onClick={() => {
+                            // set current divBackground of preview to red
+                            dispatch(setPrevColor(divBackground[previewID]));
+                            dispatch(toggleColor());
+                            dispatch(setColorFunctionS(setDivBackgroundColor));
+                        }}
+                    >
+                        <div className='top-bar-button'>
+                            Color
+                        </div>
+                    </div>
+
                 </div>
 
 
@@ -620,7 +733,11 @@ function ProjectEditor(props) {
             </div>
         )
     }
-
+    const setDivBackgroundColor = (color) => {
+        let newDivBackground = [...divBackground];
+        newDivBackground[previewID] = color;
+        setDivBackground(newDivBackground);
+    }
     const SelectedPreview = () => {
         // get width and height of the window
         let windowWidth = window.innerWidth;
@@ -634,10 +751,11 @@ function ProjectEditor(props) {
             width = height * previewDimensions;
         }
         let gap = (windowHeight - height) / 2;
+        let bg = divBackground[previewID];
         let style = {
             width: `${width}px`,
             height: `${height}px`,
-            backgroundColor: 'transparent',
+            backgroundColor: bg || 'transparent',
             border: '1px dashed #FFFFFF60',
             position: 'relative',
             top: gap + 'px',
@@ -679,7 +797,7 @@ function ProjectEditor(props) {
         const entity = props.contentState.getEntity(
             props.block.getEntityAt(0)
         );
-        const { src, height, float, url, anchor } = entity.getData();
+        const { src, height, float, url, anchor, style, text } = entity.getData();
         let type = entity.getType();
         if (type === "IMAGE") {
             type = "image";
@@ -692,6 +810,11 @@ function ProjectEditor(props) {
             media = <Link url={url} anchor={anchor} />;
 
         }
+        if (type === 'styledDiv') {
+            console.log('styled div', style);
+            media = <div style={style}>{text}</div>
+        }
+
         return media;
     };
     // make a custom draftail entity for the right component

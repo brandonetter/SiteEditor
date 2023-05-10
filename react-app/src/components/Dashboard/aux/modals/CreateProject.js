@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useState, useEffect } from 'react';
 import { getTemplates } from '../../../../store/templates'
+import { addToast } from '../../../../store/session'
 function CreateProject() {
 
     const dispatch = useDispatch();
@@ -21,10 +22,17 @@ function CreateProject() {
     }, [dispatch])
     const [templates, setTemplates] = useState([]);
     const [template, setTemplate] = useState('default');
-    const create = () => {
+
+    const create = async () => {
         let projectName = document.getElementById('project-name').value;
         console.log(projectName);
-        dispatch(createProject(projectName));
+        let res = await dispatch(createProject(projectName, template));
+        if (res.errors) {
+            dispatch(addToast({ type: 'error', message: res.errors[0] }));
+            return;
+        }
+        dispatch(addToast({ type: 'save', message: 'Project created successfully' }));
+
         dispatch(toggleCreateProject());
     }
 
@@ -42,6 +50,7 @@ function CreateProject() {
                 <div>
                     <div className='create-project-input-container'>
                         <label htmlFor='project-name'>Project Name</label>
+
                         <input type='text' id='project-name' placeholder='Project Name' />
                         <label>Template:</label><select value={template} onChange={(e) => setTemplate(e.target.value)}>
                             {templates && templates.map((template) => {

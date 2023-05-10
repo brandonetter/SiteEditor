@@ -48,11 +48,12 @@ def create_project():
         name=request.json['name'],
         userid=current_user.id
     )
-    userFirstTemplate = Template.query.filter_by(userid=current_user.id).first()
+    # select template by templateID
+    template = Template.query.get(request.json['templateID'])
 
     file = File(
         name='index.html',
-        templateid=userFirstTemplate.id,
+        templateid=template.id,
         project=project
 
     )
@@ -60,12 +61,16 @@ def create_project():
         file=file,
         content=''
     )
-    db.session.add(file)
-    db.session.add(fileContent)
+    try:
+        db.session.add(file)
+        db.session.add(fileContent)
 
-    db.session.add(project)
-    db.session.commit()
-    return project.to_dict()
+        db.session.add(project)
+        db.session.commit()
+        return project.to_dict()
+    except:
+        return {'errors': ['Project Name Already Exists']}, 401
+
 
 @project_routes.route('/<int:id>', methods=['PUT'])
 @login_required

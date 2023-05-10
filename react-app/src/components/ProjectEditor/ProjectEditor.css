@@ -1,13 +1,15 @@
 .editor{
-    width: 65vw;
+    width: calc(100vw - 20px);
     position: absolute;
     bottom:45px;
+    left:10px;
 }
 .editor-small{
-    width: 53vw;
+    width:calc(100vw - 260px);
     height: fit-content;
     position: absolute;
     bottom:45px;
+    left:10px;
 }
 .editor .buttons,.editor-small .buttons{
     display: flex;
@@ -66,14 +68,14 @@ div.DraftEditor-root {
 .project-editor-template{
     position: absolute;
     width: calc(100vh * 1.5625) !important;
-    transform-origin: bottom right !important;
+    transform-origin: center right !important;
     height: 100vh !important;
     transform: scale(0.25);
 }
 .project-editor-template-small{
     position: absolute;
     width: calc(100vh * 1.5625) !important;
-    transform-origin: bottom right !important;
+    transform-origin: center right !important;
     height: 100vh !important;
     transform: scale(0.25);
 
