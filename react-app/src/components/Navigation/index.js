@@ -14,7 +14,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faX } from '@fortawesome/free-solid-svg-icons';
 import { toggleBigLoader } from '../../store/modals';
 import { Redirect } from 'react-router-dom';
-import { signUp } from "../../store/session";
+import { signUp, loginDemo } from "../../store/session";
+
 function Splash() {
 	const [currentSplash, setCurrentSplash] = useState(0);
 	const [hasLoaded, setHasLoaded] = useState(false);
@@ -269,10 +270,12 @@ function Modal({ show, modal, setshow }) {
 function Navigation({ isLoaded }) {
 	const [show, setShow] = useState(false);
 	const [modal, setModal] = useState('');
+	const dispatch = useDispatch();
 	const sessionUser = useSelector(state => state.session.user);
-
+	const [redirect, setRedirect] = useState(false);
 	return (<>
 		<div className='navigation'>
+			{redirect && <Redirect to='/dashboard' />}
 			<div className='dashboard-header landing'>
 				<img src={logo} alt='logo' className='logo' />
 				<div className='navigation-buttons'>
@@ -292,7 +295,21 @@ function Navigation({ isLoaded }) {
 					>
 						signup
 					</div>
-					<div className='navigation-button'>
+					<div className='navigation-button'
+						onClick={() => {
+							dispatch(toggleBigLoader());
+
+							setTimeout(() => {
+
+								dispatch(loginDemo());
+								setTimeout(() => {
+									setRedirect(true)
+									dispatch(toggleBigLoader());
+								}, 700);
+							}, 50);
+						}}
+
+					>
 						demo
 					</div>
 				</div>
