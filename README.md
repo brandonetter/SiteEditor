@@ -1,6 +1,5 @@
 # Flask React Project
-Live site:
-https://instasite.onrender.com/
+
 This is the starter for the Flask React project.
 
 ## Getting started
