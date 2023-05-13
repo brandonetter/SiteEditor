@@ -51,9 +51,15 @@ def update_template(id):
     template = Template.query.get(id)
     if template.userid != current_user.id:
         return {'errors': ['Unauthorized']}, 401
-    template.name = request.json['name']
-    db.session.commit()
-    return template.to_dict()
+    if request.json['name'] == '':
+        return {'errors': ['Template name cannot be blank']}, 401
+    try:
+        template.name = request.json['name']
+        db.session.commit()
+        return template.to_dict()
+    except:
+        return {'errors': ['Template name already exists']}, 401
+
 
 @template_routes.route('/new', methods=['POST'])
 @login_required

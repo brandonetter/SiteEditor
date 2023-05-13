@@ -168,6 +168,8 @@ def update_file(id, fileid):
     file = File.query.get(fileid)
     if file.projectid != id:
         return {'errors': ['Unauthorized']}, 401
+    if request.json['name'] == '':
+        return {'errors': ['File name cannot be empty']}, 401
     file.name = request.json['name']
     db.session.commit()
     return file.to_dict()

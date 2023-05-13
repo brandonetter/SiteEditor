@@ -50,7 +50,7 @@ function MyTemplates() {
             {!loaded && <>
                 <div className='my-templates my-templates-show'>
                     <div className='loading-icon-container'>
-                        <FontAwesomeIcon icon={faSpinner} className="template-box-loading-icon" />
+                        <FontAwesomeIcon icon={faSpinner} className="template-box-loading-icon-2" />
                     </div>
                 </div>
             </>

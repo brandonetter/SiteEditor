@@ -3,6 +3,8 @@
 }
 .file-view{
     opacity: 0;
+    padding: 10px;
+    border:1px solid rgba(255, 0, 0, 0);
     transition: opacity 0.5s ease-in-out;
 }
 .file-view-show{
@@ -13,6 +15,7 @@
     align-items: center;
     justify-content: space-between;
     width: 80%;
+    color: #ffffff55;
     height: 20px;
     background-color: #232a3c;
     border-radius: 5px;
@@ -26,6 +29,7 @@
 .file-display-project-name{
     font-family: 'Courier New', Courier, monospace;
     font-size: 1.4rem;
+    color:#ffffff;
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -51,4 +55,74 @@
     border-radius: 5px;
     border: 1px solid #ffffffEA;
     background-color: #0053A6;
+}
+.file-select-me{
+    border: 1px solid #ffffff00;
+    padding:10px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    border-radius: 10px;
+    background: linear-gradient(90deg, rgb(255, 255, 255) 50%, transparent 50%), linear-gradient(90deg, rgb(255, 255, 255) 50%, transparent 50%), linear-gradient(0deg, rgb(255, 255, 255) 50%, transparent 50%), linear-gradient(0deg, rgb(255, 255, 255) 50%, transparent 50%);
+    background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+    background-size: 16px 1px, 16px 1px, 1px 16px, 1px 16px;
+    background-position: 0px 0px, 212px 100%, 0px 116px, 210px 0px;
+    animation: stepDashedBorder 20s linear infinite;
+}
+@keyframes stepDashedBorder{
+    0%{
+        background-position: 0px 0px, 212px 100%, 0px 116px, 210px 0px;
+    }
+    50%{
+        background-position: 212px 0px, 0px 100%, 0px 0px, 210px 116px;
+    }
+    100%{
+        background-position: 0px 0px, 212px 100%, 0px 116px, 210px 0px;
+    }
+}
+@keyframes pulseGlow{
+    0%{
+        box-shadow: inset 0px 0px 20px 0px #ffffff97;
+    }
+    50%{
+        box-shadow: inset 0px 0px 20px 0px #ffffff1a;
+    }
+    100%{
+        box-shadow: inset 0px 0px 20px 0px #ffffff96;
+    }
+}
+.file-selected{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap:10px;
+    color:#ffffff;
+    background-color: #1b212f;
+}
+.file-editor-buttons{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap:10px;
+    color:#ffffff6e;
+    transform-origin: right;
+    transform: scale(0.8);
+}
+.file-editor-buttons > *:hover{
+    cursor: pointer;
+    color:#ffffff;
+}
+.file-name-edit:focus{
+    outline: none;
+    background-color: transparent;
+    border:none;
+}
+.file-name-edit{
+    background-color: transparent;
+    border:none;
+    width: 100%;
+    padding:0;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    height:20px;
+    display: flex;
+    font-size: 1rem;
+    color:white;
 }

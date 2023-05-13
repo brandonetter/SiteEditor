@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getFiles, setFileS } from '../../store/files'
+import { getFiles, setFileS, addFileClick, updateFile } from '../../store/files'
 import { setProjectThunk } from '../../store/projects'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner, faPlus } from '@fortawesome/free-solid-svg-icons';
-import { toggleAddFile } from '../../store/modals'
+import { addToast } from '../../store/session';
+import { faSpinner, faPlus, faTrash, faPencil, faSave } from '@fortawesome/free-solid-svg-icons';
+import { toggleAddFile, toggleDeleteFile } from '../../store/modals'
 import './FileView.css'
 function FileView(props) {
     const dispatch = useDispatch()
@@ -12,10 +13,13 @@ function FileView(props) {
     const [loaded, setLoaded] = useState(false)
     const [templateData, setTemplateData] = useState(null)
     const [classState, setClassState] = useState('file-view')
+    const [editName, setEditName] = useState('')
     const projectID = props.match.params.id
     const project = useSelector(state => state.projects.project)
     const files = useSelector(state => state.files.files)
-
+    const selectedFile = useSelector(state => state.files.file)
+    const [isEditing, setIsEditing] = useState(false)
+    const editingRef = useRef(null)
     useEffect(() => {
         dispatch(getFiles(projectID))
         dispatch(setProjectThunk(projectID))
@@ -33,10 +37,13 @@ function FileView(props) {
         setTimeout(() => setLoaded(true), 300)
     }, [files])
     useEffect(() => {
-        if (loaded) {
+        if (loaded && selectedFile) {
             setClassState('file-view file-view-show')
         }
-    }, [loaded])
+        if (loaded && !selectedFile) {
+            setClassState('file-view file-view-show file-select-me')
+        }
+    }, [loaded, selectedFile])
 
 
     const setFileState = (file) => {
@@ -52,7 +59,7 @@ function FileView(props) {
         <br />
         {!loaded &&
 
-            <FontAwesomeIcon icon={faSpinner} className="template-box-loading-icon small" />
+            <FontAwesomeIcon icon={faSpinner} className="template-box-loading-icon-2 small" />
 
         }
 
@@ -68,8 +75,47 @@ function FileView(props) {
                     </div>
                 </div>
                 {files && loaded && files.map((file) => {
+                    if (file.id === selectedFile?.id) {
+                        return (
+                            <div className='file file-selected' key={file.id}>
+                                {isEditing ? <input ref={editingRef} className='file-name-edit' value={editName} placeholder={file.name} onChange={(e) => setEditName(e.target.value)} /> : file.name}
+                                <div className='file-editor-buttons'>
+                                    <FontAwesomeIcon icon={isEditing ? faSave : faPencil} className='file-edit'
+                                        onClick={async () => {
+                                            if (!isEditing) {
+                                                setIsEditing(true)
+                                                setEditName(file.name)
+                                                setTimeout(() => {
+
+                                                    editingRef.current.focus()
+                                                }, 1)
+                                            } else {
+                                                if (file.name === editingRef.current.value) return setIsEditing(false)
+                                                let res = await dispatch(updateFile(project.id, file.id, editingRef.current.value))
+                                                if (!res.errors) {
+                                                    dispatch(addToast({ type: 'update', message: 'File name updated' }))
+                                                } else {
+                                                    dispatch(addToast({ type: 'error', message: res.errors[0] }))
+                                                }
+
+                                                setIsEditing(false)
+                                            }
+                                        }} />
+                                    <FontAwesomeIcon icon={faTrash} className='file-delete' onClick={() => {
+                                        dispatch(toggleDeleteFile(2))
+                                    }} />
+                                </div>
+                            </div>
+                        )
+                    }
+
                     return (
-                        <div className='file' key={file.id} onClick={() => setFileState(file)}>{file.name}</div>
+                        <div className='file' key={file.id} onClick={() => {
+                            dispatch(addFileClick())
+                            setIsEditing(false)
+                            setFileState(file)
+
+                        }}>{file.name}</div>
                     )
                 }
                 )}

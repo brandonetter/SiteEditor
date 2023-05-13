@@ -12,6 +12,7 @@ import AddLink from './aux/modals/AddLink'
 import DeleteProject from './aux/modals/DeleteProject'
 import Color from './aux/modals/Color'
 import User from './aux/modals/User'
+import DeleteFile from './aux/modals/DeleteFile'
 function Dashboard() {
     const modals = useSelector((state) => state.modals);
 
@@ -51,6 +52,9 @@ function Dashboard() {
                 <Color />
             )}{modals.user && (
                 <User />
+            )}
+            {modals.deleteFile && (
+                <DeleteFile />
             )}
 
 

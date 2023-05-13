@@ -28,12 +28,22 @@ const SHOW_USER = "modals/SHOW_USER";
 const HIDE_USER = "modals/HIDE_USER";
 const SET_BIG_LOADER = "modals/SET_BIG_LOADER";
 const HIDE_BIG_LOADER = "modals/HIDE_BIG_LOADER";
+const SHOW_DELETE_FILE = "modals/SHOW_DELETE_FILE";
+const HIDE_DELETE_FILE = "modals/HIDE_DELETE_FILE";
 
 const showBigLoader = () => ({
     type: SET_BIG_LOADER,
 });
 const hideBigLoader = () => ({
     type: HIDE_BIG_LOADER,
+});
+
+const showDeleteFile = (id) => ({
+    type: SHOW_DELETE_FILE,
+    payload: id,
+});
+const hideDeleteFile = () => ({
+    type: HIDE_DELETE_FILE,
 });
 
 
@@ -133,7 +143,16 @@ const hideTemplateSave = () => ({
 });
 
 
-const initialState = { bigLoader: false, user: false, prevColor: null, color: false, setColorFunction: null, addLinkFunction: null, addLink: false, addFile: false, addImage: false, addImageFunction: null, sidebar: true, templateSave: false, deleteTemplate: false, deleteID: null, createProject: false, align: false, alignFunction: null, deleteProject: false, deleteProjectID: null };
+const initialState = { deleteFileID: null, deleteFile: false, tutorial: false, bigLoader: false, user: false, prevColor: null, color: false, setColorFunction: null, addLinkFunction: null, addLink: false, addFile: false, addImage: false, addImageFunction: null, sidebar: true, templateSave: false, deleteTemplate: false, deleteID: null, createProject: false, align: false, alignFunction: null, deleteProject: false, deleteProjectID: null };
+
+export const toggleDeleteFile = (id) => (dispatch, getState) => {
+    const { deleteFile } = getState().modals;
+    if (deleteFile) {
+        dispatch(hideDeleteFile());
+    } else {
+        dispatch(showDeleteFile(id));
+    }
+}
 
 export const hideAlignModal = () => (dispatch) => {
     dispatch(hideAlign());
@@ -344,7 +363,10 @@ export default function reducer(state = initialState, action) {
             return { ...state, bigLoader: true };
         case HIDE_BIG_LOADER:
             return { ...state, bigLoader: false };
-
+        case SHOW_DELETE_FILE:
+            return { ...state, deleteFile: true, deleteFileID: action.payload };
+        case HIDE_DELETE_FILE:
+            return { ...state, deleteFile: false };
 
         default:
             return state;

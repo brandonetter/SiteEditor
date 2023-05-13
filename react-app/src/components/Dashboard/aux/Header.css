@@ -115,8 +115,14 @@
 .toast.save{
     background-color: #48cd4f;
 }
+.toast.update{
+    background-color: #ff9f00;
+}
 .toast.delete{
     background-color: #ff3d3d;
+}
+.toast.error{
+    background-color: #ec4242;
 }
 @keyframes drop-down{
     0%{

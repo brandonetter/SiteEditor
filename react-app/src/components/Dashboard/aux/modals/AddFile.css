@@ -10,9 +10,17 @@
     align-items: center;
     justify-content: center;
 }
+
 .add-file-modal-content{
     width: 300px;
     height: 200px;
+    background-color: #232a3c;
+    border-radius: 5px;
+
+}
+.add-file-modal-content.delete{
+    width: 300px;
+    height: 120px;
     background-color: #232a3c;
     border-radius: 5px;
 
@@ -32,4 +40,25 @@
     font-size: 0.8rem;
     color: #6d707dea;
     flex-direction: column;
+}
+.add-file-modal-body.delete{
+    height:75px;
+}
+.add-file-modal-body-buttons-cancel.nodelete{
+    position: absolute;
+    bottom: 25px;
+    right: 10px;
+    display: flex;
+    gap: 10px;
+}
+.add-file-modal-body-buttons-add.delete{
+    background-color: rgb(186, 38, 38);
+    border:1px solid transparent;
+}
+.add-file-modal-body-buttons-add.delete:hover{
+    background-color: rgb(255, 0, 0);
+    border:1px solid transparent;
+}
+.nodelete{
+    font-size:0.9rem;
 }

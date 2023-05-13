@@ -73,7 +73,7 @@ export const updateTemplate = (templateData) => async (dispatch, getState) => {
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            name,
+            name: name,
         }),
     });
     const data = await response.json();
@@ -82,8 +82,10 @@ export const updateTemplate = (templateData) => async (dispatch, getState) => {
     }
     let tstate = getState().shared.templates;
     let newTemplates = [];
+    ;
     if (tstate.templates)
         newTemplates = tstate.templates.map((template) => {
+            console.log(template.id, templateData.id)
             if (template.id === templateData.id) {
                 template.name = name;
             }
@@ -98,7 +100,7 @@ export const updateTemplate = (templateData) => async (dispatch, getState) => {
         });
     dispatch(assignTemplates(newTemplates));
 
-    return {};
+    return data;
 };
 
 

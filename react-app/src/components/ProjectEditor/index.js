@@ -2,7 +2,7 @@ import { Editor, EditorState, RichUtils, ContentState, Modifier, convertToRaw, C
 import 'draft-js/dist/Draft.css';
 import './ProjectEditor.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBold, faItalic, faUnderline, faStrikethrough, faSave, faAlignJustify, faImage, faUpload, faSpinner, faLink, faSquare } from '@fortawesome/free-solid-svg-icons';
+import { faBold, faPlus, faDownload, faArrowUp, faMinus, faQuestionCircle, faItalic, faUnderline, faStrikethrough, faSave, faAlignJustify, faImage, faUpload, faSpinner, faLink, faSquare, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState, useRef } from 'react';
 import StyleButton from './StyleButton';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,8 +12,10 @@ import htmlToDraft from 'html-to-draftjs';
 import draftToHtml from 'draftjs-to-html';
 import { convertFromHTML, convertToHTML } from "draft-convert"
 import { ENTITY_TYPE, BLOCK_TYPE } from 'draftail';
-import { saveFileContents } from '../../store/files';
+import { saveFileContents, addFileClick } from '../../store/files';
 import { addToast } from '../../store/session';
+import JSZip from 'jszip';
+import FileSaver from 'file-saver';
 import { toggleAlign, toggleColor, setPrevColor, setColorFunctionS, setAddLinkFunctionS, toggleAddLink, setAlignFunctionS, hideAlignModal, showAddImageModal, hideAddImageModal, setAddImageFunctionS, toggleAddImage } from '../../store/modals';
 function ProjectEditor(props) {
 
@@ -21,7 +23,9 @@ function ProjectEditor(props) {
     const [boldState, setBoldState] = useState('inactive-button');
     const file = useSelector(state => state.files.file);
     const files = useSelector(state => state.files.files);
+    const fileClick = useSelector(state => state.files.fileClick);
     const sideBar = useSelector(state => state.modals.sidebar);
+    const project = useSelector(state => state.projects.project);
     const addImageModal = useSelector(state => state.modals.addImage);
     const dispatch = useDispatch();
     const editor = useRef(null);
@@ -30,16 +34,29 @@ function ProjectEditor(props) {
     const [topBarClass, setTopBarClass] = useState('top-bar');
     const [workingContents, setWorkingContents] = useState(null);
     const previewRef = useRef(null);
+    const [previewDimensionHard, setPreviewDimensionHard] = useState(null);
     const [previewDimensions, setPreviewDimensions] = useState(null);
     const [previewContents, setPreviewContents] = useState(null);
     const [previewID, setPreviewID] = useState(null);
     const [divStyles, setDivStyles] = useState(null);
+    const [divFontSize, setDivFontSize] = useState(null);
+    const [divFontFamily, setDivFontFamily] = useState(null);
     const [divBackground, setDivBackground] = useState(null);
 
     const [save, setSave] = useState(false);
     const [fullPreview, setFullPreview] = useState(false);
     const [saveButtonLoader, setSaveButtonLoader] = useState(false);
 
+    useEffect(() => {
+        console.log(fileClick);
+        // setWorkingContents('');
+        // setPreviewContents('');
+        // setPreviewID('');
+        setPreviewDimensions(false);
+        setEditorState(EditorState.createEmpty());
+
+
+    }, [fileClick])
 
     const hideAlignModalS = () => {
         dispatch(hideAlignModal());
@@ -115,7 +132,9 @@ function ProjectEditor(props) {
             let divs = content.divs;
             let divContent = [];
             let divStylesList = [];
+            let divFontSizeList = [];
             let divBackgroundList = [];
+            let divFontFamilyList = [];
             let loadedContent = file.content;
             loadedContent = loadedContent.split("</head>");
             loadedContent = loadedContent[1];
@@ -127,6 +146,18 @@ function ProjectEditor(props) {
                     divContent.push(main[i].innerHTML);
                     console.log(main[i].style.backgroundColor);
                     divBackgroundList.push(main[i].style.backgroundColor);
+                    if (main[i].style.fontFamily) {
+                        divFontFamilyList.push(main[i].style.fontFamily);
+                    } else {
+                        divFontFamilyList.push('Arial');
+                    }
+
+                    if (main[i].style.fontSize) {
+                        divFontSizeList.push(main[i].style.fontSize);
+                    } else {
+                        divFontSizeList.push('16px');
+                    }
+
                     if (main[i].style?.display === 'flex') {
                         let obj = {
                             display: main[i].style.display,
@@ -141,11 +172,15 @@ function ProjectEditor(props) {
                 } else {
                     divContent.push('');
                     divStylesList.push('');
+                    divFontSizeList.push('16px');
                 }
             }
             setDivBackground(divBackgroundList);
             setDivStyles(divStylesList);
             setWorkingContents(divContent);
+            setDivFontFamily(divFontFamilyList);
+            console.log(divFontSizeList);
+            setDivFontSize(divFontSizeList);
             // set editor state to loaded content
             setPreviewDimensions(false);
             //setEditorState(EditorState.createEmpty());
@@ -155,7 +190,9 @@ function ProjectEditor(props) {
     //     console.log("previewRef.currenAdasadadt");
 
     useEffect(() => {
-        exportHTML();
+        if (previewDimensions) {
+            exportHTML();
+        }
     }, [editorState])
 
     // }, [previewCount])
@@ -249,6 +286,7 @@ function ProjectEditor(props) {
             // get with and height of div
             let width = etarget.offsetWidth;
             let height = etarget.offsetHeight;
+            setPreviewDimensionHard([width, height]);
             setPreviewID(etarget.id);
             // get ratio of div
             let ratio = width / height;
@@ -294,6 +332,8 @@ function ProjectEditor(props) {
         let divData = '';
         for (let i = 0; i < divs.length; i++) {
             let divStyle = divStyles?.[i];
+            let fontSizes = divFontSize?.[i];
+            let fontFamily = divFontFamily?.[i];
             // convert object to string
             if (typeof divStyle === 'object') {
 
@@ -316,6 +356,7 @@ function ProjectEditor(props) {
                 divStyle = divStyle.replace(/flexDirection/g, 'flex-direction');
                 // replace flexWrap with flex-wrap
 
+
             }
             let colorOfDiv = divBackground?.[i];
             // remove the first <p></p> from workingContents
@@ -329,7 +370,7 @@ function ProjectEditor(props) {
             divData += `
            <div id=${i}  class='childrenNoSelect' style="
            ${divStyle}
-           width:100%;height:100%;grid-column: ${startColumn} / span ${endColumn}; grid-row: ${startRow} / span ${endRow}; background-color: ${colorOfDiv || color};">
+           width:100%;height:100%;font-size: ${fontSizes};font-family:${fontFamily};grid-column: ${startColumn} / span ${endColumn}; grid-row: ${startRow} / span ${endRow}; background-color: ${colorOfDiv || color};">
            ${workingContent}
            </div>
 
@@ -396,7 +437,7 @@ function ProjectEditor(props) {
 
 
         return (
-            <div ref={previewRef} style={templatePreview} className={previewClass} dangerouslySetInnerHTML={{ __html: divData }} >
+            <div ref={previewRef} style={templatePreview} className={previewDimensions ? previewClass : previewClass + " highlight-preview"} dangerouslySetInnerHTML={{ __html: divData }} >
 
             </div >
         )
@@ -680,10 +721,82 @@ function ProjectEditor(props) {
         dispatch(toggleAddLink());
         setEditorState(newEditorState);
     }
+    const FontSize = () => {
+        const [fontSize, setFontSize] = useState(divFontSize?.[previewID]);
+        useEffect(() => {
+            setFontSize(divFontSize?.[previewID]);
+        }, [previewID]);
+
+        return (
+            <div className='top-bar-font-size'>
+                <input type='text' value={fontSize} onChange={(e) => { setFontSize(e.target.value); }} />
+                <div className='font-size-buttons'>
+                    <div className='font-size-button-up' onMouseDown={
+                        () => {
+                            let newDivFontSize = [...divFontSize];
+                            newDivFontSize[previewID] = Number(fontSize.split("px")[0]) + 1 + "px";
+                            setDivFontSize(newDivFontSize);
+                        }
+
+                    }>
+                        <FontAwesomeIcon icon={faPlus} />
+                    </div>
+                    <div className='font-size-button-down' onMouseDown={
+                        () => {
+                            let newDivFontSize = [...divFontSize];
+                            newDivFontSize[previewID] = Number(fontSize.split("px")[0]) - 1 + "px";
+                            setDivFontSize(newDivFontSize);
+                        }
+
+                    }>
+                        <FontAwesomeIcon icon={faMinus} />
+                    </div>
+                </div>
+            </div>
+        )
+    }
+    const FontFamily = () => {
+        const [fontFamily, setFontFamily] = useState(divFontFamily?.[previewID]);
+        const [fontFamilyList, setFontFamilyList] = useState([
+            'Arial',
+            'Times',
+            'Courier',
+            'Georgia',
+            'Verdana',
+            'Impact',
+            'Lucida',
+            'Tahoma',
+        ]);
+        useEffect(() => {
+            setFontFamily(divFontFamily?.[previewID]);
+        }, [previewID]);
+
+
+        return (
+            <div className='top-bar-font-family'>
+                <select className='top-bar-font-family' onChange={(e) => {
+                    setFontFamily(e.target.value);
+                    let newDivFontFamily = [...divFontFamily];
+                    newDivFontFamily[previewID] = e.target.value;
+                    console.log(newDivFontFamily);
+                    setDivFontFamily(newDivFontFamily);
+
+                }} value={fontFamily}>
+                    {fontFamilyList.map((font, index) => {
+                        return (
+                            <option value={font} key={index} className={"option" + index}>{font}</option>
+                        )
+                    })}
+
+                </select>
+            </div>
+        )
+    }
 
     const TopBar = () => {
         return (
             <div className={topBarClass}>
+                {!previewDimensions && <div className='top-bar-cover'></div>}
                 <div className='top-bar-left'>
                     <div className='top-bar-button' onMouseDown={
                         async () => {
@@ -702,13 +815,47 @@ function ProjectEditor(props) {
                         </div>
 
                     </div>
+                    <div className='top-bar-button' onClick={() => {
+                        const zip = new JSZip();
+                        // for each file in project, add the contents to the zip
+                        files.forEach((file) => {
+                            // if file.name does not end in .html, add .html
+                            if (!file.name.endsWith('.html')) {
+                                file.name = file.name + '.html';
+                            }
+                            // in file.content, replace all instances of a href="local with a href="/
+                            file.content = file.content.replaceAll('a href="http://local/', 'a href="./');
+                            file.contnet = file.content.replaceAll('data-local="true"', '');
+                            // use regex to remove anythign between <script> and </script>
+                            file.content = file.content.replaceAll(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+
+                            zip.file(file.name, file.content);
+                        });
+                        // add the idlist.txt file
+
+
+                        zip.file('idlist.txt', 'PMID:29651880\r\nPMID:29303721');
+
+                        zip.generateAsync({ type: 'blob' }).then(function (content) {
+                            FileSaver.saveAs(content, `${project.name}.zip`);
+                        });
+                    }}>
+                        <FontAwesomeIcon icon={faDownload} /> Download
+
+                    </div>
                 </div>
                 <div className='top-bar-right'>
+                    <div>
+                        <FontFamily />
+                    </div>
+                    <div >
+                        <FontSize />
+                    </div>
                     <div
                         onClick={() => { dispatch(toggleAlign()); dispatch(setAlignFunctionS(thisIs)); }}
                     >
                         <div className='top-bar-button'>
-                            Align
+                            Align Div
                         </div>
                     </div>
 
@@ -722,7 +869,16 @@ function ProjectEditor(props) {
                         }}
                     >
                         <div className='top-bar-button'>
-                            Color
+                            Background Color
+                        </div>
+                    </div>
+                    <div
+                        onClick={() => {
+                        }
+                        }>
+
+                        <div className='top-bar-button'>
+                            <FontAwesomeIcon icon={faQuestionCircle} />
                         </div>
                     </div>
 
@@ -742,34 +898,48 @@ function ProjectEditor(props) {
         // get width and height of the window
         let windowWidth = window.innerWidth;
         let windowHeight = window.innerHeight;
-
         let width = windowWidth * 1;
+        let scale = 'width';
         let height = width / previewDimensions;
         // clamp height to window height
         if (height > windowHeight) {
             height = windowHeight * 1;
             width = height * previewDimensions;
+            scale = 'height';
         }
-        let gap = (windowHeight - height) / 2;
+        let scaler = 1;
+        if (scale === 'width') {
+            scaler = width / previewDimensionHard[0];
+        } else {
+            scaler = height / previewDimensionHard[1];
+        }
+
+
+        let gap = (windowHeight - height) / 4;
         let bg = divBackground[previewID];
         let style = {
-            width: `${width}px`,
-            height: `${height}px`,
+            width: `${previewDimensionHard[0]}px`,
+            height: `${previewDimensionHard[1]}px`,
+            // width: '100px',
+            // height: '100px',
             backgroundColor: bg || 'transparent',
             border: '1px dashed #FFFFFF60',
             position: 'relative',
-            top: gap + 'px',
+            fontSize: divFontSize?.[previewID] || '16px',
+            fontFamily: divFontFamily?.[previewID] || 'Arial',
+            // top: gap + 'px',
             zIndex: '100',
         }
-
+        console.log("SCALE", scaler, previewDimensions, previewDimensionHard);
         let style2 = {
             width: sideBar ? '80vw' : '100vw',
             display: 'flex',
-            justifyContent: 'center',
-
-            alignItems: 'center',
-            transformOrigin: 'top center',
-            transform: 'scale(0.5)',
+            justifyContent: 'flex-start',
+            position: 'relative',
+            left: 20,
+            alignItems: 'flex-start',
+            transformOrigin: 'top left',
+            transform: `scale(${scaler / 2})`,
         }
         let style3 = divStyles[previewID];
         let style4 = {
@@ -833,12 +1003,25 @@ function ProjectEditor(props) {
 
     return (
         <div>
-
+            {!file && <div className='no-file-selected'>
+                <div className='no-file-helper-text'>
+                    <FontAwesomeIcon icon={faArrowLeft} />
+                    Select a file to begin
+                </div>
+            </div>}
             <TopBar />
             {file && generateTemplatePreview(file.template, classPreview)}
 
             {previewDimensions && <SelectedPreview />}
             <div className={editorClass}>
+                {!previewDimensions && file && <div className='editor-cover'>
+
+                    <div className='editor-cover-select-template'>
+                        <FontAwesomeIcon icon={faArrowUp} />
+                        Select a DIV to edit
+                    </div>
+
+                </div>}
                 <div className='buttons'>
                     <BlockStyleControls />
                 </div>
