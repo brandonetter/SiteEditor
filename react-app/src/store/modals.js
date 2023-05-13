@@ -30,7 +30,7 @@ const SET_BIG_LOADER = "modals/SET_BIG_LOADER";
 const HIDE_BIG_LOADER = "modals/HIDE_BIG_LOADER";
 const SHOW_DELETE_FILE = "modals/SHOW_DELETE_FILE";
 const HIDE_DELETE_FILE = "modals/HIDE_DELETE_FILE";
-
+const HIDE_ALL = "modals/HIDE_ALL";
 const showBigLoader = () => ({
     type: SET_BIG_LOADER,
 });
@@ -141,6 +141,10 @@ const showTemplateSave = () => ({
 const hideTemplateSave = () => ({
     type: HIDE_TEMPLATE_SAVE,
 });
+const hideAll = () => ({
+    type: HIDE_ALL,
+});
+
 
 
 const initialState = { deleteFileID: null, deleteFile: false, tutorial: false, bigLoader: false, user: false, prevColor: null, color: false, setColorFunction: null, addLinkFunction: null, addLink: false, addFile: false, addImage: false, addImageFunction: null, sidebar: true, templateSave: false, deleteTemplate: false, deleteID: null, createProject: false, align: false, alignFunction: null, deleteProject: false, deleteProjectID: null };
@@ -155,6 +159,7 @@ export const toggleDeleteFile = (id) => (dispatch, getState) => {
 }
 
 export const hideAlignModal = () => (dispatch) => {
+
     dispatch(hideAlign());
     return {};
 };
@@ -175,6 +180,7 @@ export const hideAddImageModal = () => (dispatch) => {
 
 export const toggleColor = () => (dispatch, getState) => {
     const { color } = getState().modals;
+    dispatch(hideAll());
     if (color) {
         dispatch(hideColor());
     } else {
@@ -251,7 +257,9 @@ export const toggleCreateProject = () => (dispatch, getState) => {
 };
 
 export const toggleAlign = () => (dispatch, getState) => {
+
     const { align } = getState().modals;
+    dispatch(hideAll());
     if (align) {
         dispatch(hideAlign());
     } else {
@@ -284,6 +292,7 @@ export const toggleDeleteProject = (id) => (dispatch, getState) => {
 };
 export const toggleUser = () => (dispatch, getState) => {
     const { user } = getState().modals;
+    dispatch(hideAll());
     if (user) {
         dispatch(hideUser());
     } else {
@@ -367,7 +376,8 @@ export default function reducer(state = initialState, action) {
             return { ...state, deleteFile: true, deleteFileID: action.payload };
         case HIDE_DELETE_FILE:
             return { ...state, deleteFile: false };
-
+        case HIDE_ALL:
+            return { ...state, deleteFile: false, deleteProject: false, deleteTemplate: false, addImage: false, addFile: false, addLink: false, color: false, templateSave: false, createProject: false, align: false, user: false, bigLoader: false };
         default:
             return state;
     }

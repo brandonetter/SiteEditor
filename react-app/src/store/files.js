@@ -24,6 +24,10 @@ const setFileClick = (fileClick) => ({
 const initialState = { fileClick: 0, file: null, files: null };
 
 
+export const getContent = (id) => async (dispatch, getState) => {
+    return getState().files.file.content;
+}
+
 export const getFiles = (id) => async (dispatch) => {
     const response = await fetch(`/api/projects/${id}/file`);
     const data = await response.json();

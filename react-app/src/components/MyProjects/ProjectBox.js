@@ -3,6 +3,7 @@ import { faSpinnerThird, faPencil, faTrash } from '@fortawesome/free-solid-svg-i
 import { useDispatch } from 'react-redux';
 import { Redirect } from 'react-router-dom'
 import { useState } from 'react';
+import { setFileS } from '../../store/files';
 import { toggleDeleteProject } from '../../store/modals';
 function TemplateBox({ name, templateData, id }) {
     const dispatch = useDispatch();
@@ -34,6 +35,7 @@ function TemplateBox({ name, templateData, id }) {
                 <div className="template-box-loading-icon-container">
                     <FontAwesomeIcon icon={faPencil} className="template-box-name-icon" onClick={
                         () => {
+                            dispatch(setFileS(null));
                             setRedirect(true);
                         }
 
