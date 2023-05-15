@@ -58,6 +58,9 @@ https://github.com/brandonetter/SiteEditor/assets/4108484/2dfaff8a-f5b8-4c7e-832
 
 Drag and Drop design editor
 
+https://github.com/brandonetter/SiteEditor/assets/4108484/0f0f87f3-4fe5-406d-9a89-5e96d08333ff
+
+Live Editor With Features
 
 ## Database Design 
 ![db](https://user-images.githubusercontent.com/4108484/233222260-777b5b7e-1e87-4c18-844a-43e05fe423da.png)
