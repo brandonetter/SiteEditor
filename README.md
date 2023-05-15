@@ -34,8 +34,6 @@ To remove all messages, channels, dms and reset back to initial DB state run:
 
 ---
 
-
-
 ## Features
 
 - Rich text editor build with [Facebook's Draft.JS](https://draftjs.org/)
@@ -51,6 +49,11 @@ To remove all messages, channels, dms and reset back to initial DB state run:
     - Insert Images
     - Control DIV alignment
 
+## Feature Highlights
+https://github.com/brandonetter/SiteEditor/assets/4108484/073ed03e-fa07-4be1-8620-d673643d5451
+Drag and Drop design editor
+
+
 ## Database Design 
 ![db](https://user-images.githubusercontent.com/4108484/233222260-777b5b7e-1e87-4c18-844a-43e05fe423da.png)
 
@@ -58,5 +61,5 @@ A simple database design where each user has several projects. Each project has 
 
 
 
-https://github.com/brandonetter/SiteEditor/assets/4108484/073ed03e-fa07-4be1-8620-d673643d5451
+
 
