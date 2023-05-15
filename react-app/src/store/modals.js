@@ -164,7 +164,6 @@ export const hideAlignModal = () => (dispatch) => {
     return {};
 };
 export const setPrevColor = (color) => (dispatch) => {
-    console.log("setting prev color", color);
     dispatch({ type: SET_COLOR, payload: color });
     return {};
 };

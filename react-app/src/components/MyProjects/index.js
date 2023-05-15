@@ -20,7 +20,6 @@ function MyTemplates() {
         get();
     }, [])
     useEffect(() => {
-        console.log(templatesState);
         if (!templatesState) return;
         setTimeout(() => setLoaded(true), 600);
         if (templatesState.projects)
@@ -32,7 +31,6 @@ function MyTemplates() {
         if (loaded) {
             setDisplayClass('my-templates my-templates-show');
         }
-        console.log(templates);
     }, [loaded])
 
     return (

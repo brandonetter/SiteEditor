@@ -20,7 +20,6 @@ function MyTemplates() {
         get();
     }, [])
     useEffect(() => {
-        console.log(templatesState);
         if (!templatesState) return;
         setTimeout(() => setLoaded(true), 600);
         if (templatesState.templates)
