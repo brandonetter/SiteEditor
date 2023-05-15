@@ -50,7 +50,12 @@ To remove all messages, channels, dms and reset back to initial DB state run:
     - Control DIV alignment
 
 ## Feature Highlights
-https://github.com/brandonetter/SiteEditor/assets/4108484/073ed03e-fa07-4be1-8620-d673643d5451
+
+
+
+https://github.com/brandonetter/SiteEditor/assets/4108484/2dfaff8a-f5b8-4c7e-8322-076ae09195e0
+
+
 Drag and Drop design editor
 
 
