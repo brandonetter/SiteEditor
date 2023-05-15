@@ -66,13 +66,15 @@ function Splash() {
 	return (
 		<div className='navigation-header'>
 			{hasLoaded && (
-				<div className='splash-content'>
-					<video key={splash} width='600' height='300' autoPlay muted loop className='drag-demo'>
-						<source src={splashImage[currentSplash % splashImage.length]} type='video/webm' />
-					</video>
-					<h2>
-						{splash}
-					</h2>
+				<div className='nav-center'>
+					<div className='splash-content'>
+						<video key={splash} width='600' height='300' autoPlay muted loop className='drag-demo'>
+							<source src={splashImage[currentSplash % splashImage.length]} type='video/webm' />
+						</video>
+						<h2>
+							{splash}
+						</h2>
+					</div>
 				</div>
 
 			)}

@@ -26,6 +26,9 @@
   font-family: 'Braah One', sans-serif;
 
 }
+.nav-center{
+  margin-top:20vh;
+}
 .fade-out-left{
   animation: fadeOutLeft 1.4s;
 }
@@ -63,8 +66,6 @@
   }
 }
 .splash-content{
-  position: absolute;
-  top:25vh;
   opacity: 0.8;
   z-index:1;
   display: flex;
