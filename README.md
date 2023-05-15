@@ -56,3 +56,7 @@ To remove all messages, channels, dms and reset back to initial DB state run:
 
 A simple database design where each user has several projects. Each project has several files. Each file has many-to-one relationship with templates. Each file has a one-to-one relationship with FileContent
 
+
+
+https://github.com/brandonetter/SiteEditor/assets/4108484/073ed03e-fa07-4be1-8620-d673643d5451
+
