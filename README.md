@@ -6,7 +6,7 @@
 
 ![postgres](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)![flask](https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white)![font-awesome](https://img.shields.io/badge/Font_Awesome-339AF0?style=for-the-badge&logo=fontawesome&logoColor=white)
 
-InstaSite is a Python and React project meant to allow users to make simple websites using a GUI interface for template design, and a rich text editor for content.
+InstaSite is a Python and React project meant to allow users to make simple websites using a GUI interface for template design, and a rich text editor for content. It was created as a final portfoilio project by Brandon Etter.
 
 ---
 
@@ -68,6 +68,15 @@ Live Editor With Features
 A simple database design where each user has several projects. Each project has several files. Each file has many-to-one relationship with templates. Each file has a one-to-one relationship with FileContent
 
 
+## Developer Experience
+
+This is my second time building an editor using Draft.JS, but it's application was significantly more complex than I had initially thought. The editor needed to be able to **consistently** export HTML and load that HTML back into the Editor state, and each additional feature into the Editor brought it's own unique challenges to overcome regarding that consistency. Outside of making this a learning experience- I think I would much rather use a prebuilt editor maintained by several developers over years instead of one I was making in tandem with other features over the course of a couple weeks. In the end, I ended up learning a lot about controlling entity-state inside DraftJS and I'm proud of the final result.
 
 
+
+https://github.com/brandonetter/SiteEditor/assets/4108484/296bf088-3a98-4b12-906d-2a29fa1d4526
+
+
+
+Much of the work involved parsing through the exported HTML from the editor, and combining it with the full DIV styling controls like 'alignment' and 'font-family'. The final product needed to then be further parsed to provide two different versions of each page. One for the preview and one for the final output. The links inside of the preview are controlled with javascript to change the page content by communicating back with the main page instead of actually navigating the page. I had been previously unaware that child-windows created with JS could communicate and call functions from the main window- this luckily made the process very easy.
 
