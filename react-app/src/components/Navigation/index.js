@@ -321,6 +321,18 @@ function Navigation({ isLoaded }) {
 		<div className='navigation-header'>
 			<Splash />
 		</div>
+		<div className='navigation-socials'>
+			<div className='navigation-social'>
+				<div>Created by <a href='https://github.com/brandonetter'>Brandon Etter</a></div>
+				<div className='navigation-social-links'>
+					<a href='https://github.com/brandonetter/SiteEditor'>
+						<img src='https://shields.io/badge/Github-Repo-green?logo=github&style=plastic' />
+					</a>
+				</div>
+
+
+			</div>
+		</div>
 		<Modal show={show} modal={modal} setshow={setShow} />
 	</>
 

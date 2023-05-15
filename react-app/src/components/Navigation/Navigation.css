@@ -63,6 +63,8 @@
   }
 }
 .splash-content{
+  position: absolute;
+  top:25vh;
   opacity: 0.8;
   z-index:1;
   display: flex;

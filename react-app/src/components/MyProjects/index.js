@@ -46,6 +46,7 @@ function MyTemplates() {
                         <TemplateBox name={template.name} key={template.id} id={template.id} />
                     )
                 })}
+                {!templates.length && loaded && <div className='no-templates'>Theres nothing here ... 😢</div>}
             </div>
             {!loaded && <>
                 <div className='my-templates my-templates-show'>

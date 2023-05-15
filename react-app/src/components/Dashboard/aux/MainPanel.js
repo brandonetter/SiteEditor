@@ -29,7 +29,15 @@ function MainPanel({ sidebarState }) {
                 <Route path="/dashboard/projects/:id" component={ProjectEditor} />
 
                 <Route path="/dashboard">
-                    asdased
+                    <div className="dashboard-main-panel-welcome">
+                        <h1>Welcome to the Dashboard!</h1>
+                        <p>Try creating a template to get started!</p>
+                        <div className='dashboard-content'>
+                            <h2>Your Projects: </h2>
+                            <MyProjects />
+                            <h2>Your Templates:</h2>
+                            <MyTemplates /></div>
+                    </div>
                 </Route>
 
 

@@ -146,6 +146,9 @@ div.DraftEditor-root {
     background-color: #1C2333;
     z-index: 1;
 }
+.project-editor-template>div>a, .project-editor-template-small>div>a{
+    pointer-events: none;
+}
 .project-editor-template >div> p, .project-editor-template-small >div> p{
     padding: 0;
     margin: 0;
