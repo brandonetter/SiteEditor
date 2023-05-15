@@ -167,7 +167,6 @@ function TemplateMaker() {
 
             if (startColumn > 1) {
                 closestVert = mainWindow.verticalLines[startColumn - 2];
-                console.log(closestVert);
             }
             if (endColumn > 1) {
                 nextVert = mainWindow.verticalLines[endColumn - 1] || 1;
@@ -178,14 +177,12 @@ function TemplateMaker() {
 
             let closestHor = 0;
             let nextHor = 1;
-            console.log(startRow, endRow);
             if (startRow === 1) {
                 closestHor = 0;
             }
             if (endRow === 1) {
                 nextHor = mainWindow.horizontalLines[0] || 1;
             }
-            console.log(closestHor, nextHor);
             if (startRow > 1) {
                 closestHor = mainWindow.horizontalLines[startRow - 2];
             }
@@ -198,8 +195,6 @@ function TemplateMaker() {
 
             closestHor = closestHor * mainWindow.height + mainWindow.top;
             nextHor = nextHor * mainWindow.height + mainWindow.top;
-            console.log(closestVert, nextVert, closestHor, nextHor);
-            console.log(divList[i].id)
             let newRect = new fabric.Rect({
                 width: nextVert - closestVert,
                 height: nextHor - closestHor,
@@ -755,9 +750,7 @@ function TemplateMaker() {
 
         });
         newCanvas.on('mouse:down', function (e) {
-            console.log(e);
             if (e.target) {
-                console.log(e.target);
             }
         });
 
@@ -1089,8 +1082,6 @@ function TemplateMaker() {
 
 
             });
-            console.log(e.target.id);
-            console.log(mainWindow.divList);
             let thisDivData = mainWindow.divList.find((f) => f.id === e.target?.id);
             if (!thisDivData) {
                 thisDivData = {
@@ -1108,7 +1099,6 @@ function TemplateMaker() {
             }
             mainWindow.divList = [...mainWindow.divList, thisDivData]
             setDivList((e) => [...mainWindow.divList]);
-            console.log(e.target.id);
             thisDivData.left = e.target.left;
             thisDivData.top = e.target.top;
             thisDivData.width = e.target.width;

@@ -48,7 +48,6 @@ function ProjectEditor(props) {
     const [saveButtonLoader, setSaveButtonLoader] = useState(false);
 
     useEffect(() => {
-        console.log(fileClick);
         // setWorkingContents('');
         // setPreviewContents('');
         // setPreviewID('');
@@ -102,7 +101,6 @@ function ProjectEditor(props) {
                 return <img src={entity.data.src} alt={entity.data.alt} style={{ float: entity.data.float, height: entity.data.height + 'px' }} />
             }
             if (entity.type === 'link' || entity.type === "LINK") {
-                console.log(entity);
                 return <a href={entity.data.url} data-local={entity.data.isLocal}>{entity.data.anchor}</a>
             }
             if (entity.type === ENTITY_TYPE.HORIZONTAL_RULE) {
@@ -144,7 +142,6 @@ function ProjectEditor(props) {
             for (let i = 0; i < divs.length; i++) {
                 if (loadedContent) {
                     divContent.push(main[i].innerHTML);
-                    console.log(main[i].style.backgroundColor);
                     divBackgroundList.push(main[i].style.backgroundColor);
                     if (main[i].style.fontFamily) {
                         divFontFamilyList.push(main[i].style.fontFamily);
@@ -179,7 +176,6 @@ function ProjectEditor(props) {
             setDivStyles(divStylesList);
             setWorkingContents(divContent);
             setDivFontFamily(divFontFamilyList);
-            console.log(divFontSizeList);
             setDivFontSize(divFontSizeList);
             // set editor state to loaded content
             setPreviewDimensions(false);
@@ -240,7 +236,6 @@ function ProjectEditor(props) {
             return null
         },
         htmlToStyle: (nodeName, node, currentStyle) => {
-            console.log(nodeName, node, currentStyle);
             if (nodeName === "span") {
                 return currentStyle.add("red")
             }
@@ -248,7 +243,6 @@ function ProjectEditor(props) {
         },
 
         htmlToBlock: (nodeName, data) => {
-            console.log(nodeName, data);
             if (nodeName === "span") {
                 return data;
                 return {
@@ -455,7 +449,6 @@ function ProjectEditor(props) {
             ${files[index].content}
             `);
         previewWindow.document.close();
-        console.log(files[index]);
     }
 
     const showFullPreview = () => {
@@ -778,7 +771,6 @@ function ProjectEditor(props) {
                     setFontFamily(e.target.value);
                     let newDivFontFamily = [...divFontFamily];
                     newDivFontFamily[previewID] = e.target.value;
-                    console.log(newDivFontFamily);
                     setDivFontFamily(newDivFontFamily);
 
                 }} value={fontFamily}>
@@ -930,7 +922,6 @@ function ProjectEditor(props) {
             // top: gap + 'px',
             zIndex: '100',
         }
-        console.log("SCALE", scaler, previewDimensions, previewDimensionHard);
         let style2 = {
             width: sideBar ? '80vw' : '100vw',
             display: 'flex',
@@ -981,7 +972,6 @@ function ProjectEditor(props) {
 
         }
         if (type === 'styledDiv') {
-            console.log('styled div', style);
             media = <div style={style}>{text}</div>
         }
 

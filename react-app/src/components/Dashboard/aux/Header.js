@@ -14,11 +14,9 @@ function Header() {
     const modals = useSelector((state) => state.modals);
     const toasts = useSelector((state) => state.session.toasts);
     useEffect(() => {
-        console.log(toasts);
         if (!toasts?.length) return;
         async function getToast() {
             const toast = await dispatch(getNextToast());
-            console.log(toast);
             setCurrentToast(toast?.[0]);
             setTimeout(() => {
                 setCurrentToast(false);
@@ -40,10 +38,8 @@ function Header() {
     const ttEnter = () => {
         setShowTooltip(true);
         if (intervalID) {
-            console.log("clear");
             clearInterval(intervalID);
         }
-        console.log("enter");
     }
 
     const ttLeave = () => {

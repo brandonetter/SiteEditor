@@ -54,14 +54,12 @@ export const deleteTemplate = (templateId) => async (dispatch, getState) => {
     }
     // remove the template from the store
     let tstate = getState().shared.templates;
-    console.log("asdasdsd", tstate);
     let newTemplates = [];
     if (tstate.templates)
         newTemplates = tstate.templates.filter((template) => template.id !== templateId);
     else
         newTemplates = tstate.filter((template) => template.id !== templateId);
     dispatch(assignTemplates(newTemplates));
-    console.log("asdasdsd", newTemplates)
     return { 'success': 'success' };
 };
 
@@ -85,7 +83,6 @@ export const updateTemplate = (templateData) => async (dispatch, getState) => {
     ;
     if (tstate.templates)
         newTemplates = tstate.templates.map((template) => {
-            console.log(template.id, templateData.id)
             if (template.id === templateData.id) {
                 template.name = name;
             }
