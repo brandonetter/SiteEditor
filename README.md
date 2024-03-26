@@ -6,7 +6,7 @@
 
 ![postgres](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)![flask](https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white)![font-awesome](https://img.shields.io/badge/Font_Awesome-339AF0?style=for-the-badge&logo=fontawesome&logoColor=white)
 
-InstaSite is a Python and React project meant to allow users to make simple websites using a GUI interface for template design, and a rich text editor for content. It was created as a final portfoilio project by Brandon Etter.
+InstaSite is a Python and React project meant to allow users to make simple websites using a GUI interface for template design, and a rich text editor for content.
 
 ---
 
